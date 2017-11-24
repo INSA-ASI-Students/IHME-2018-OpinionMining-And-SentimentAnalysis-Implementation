@@ -1,0 +1,81 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}	%dimension de la feuille
+\usepackage[utf8]{inputenc}%codage linux
+\usepackage[T1]{fontenc}%les fontes
+\usepackage[french]{babel}%caractères français
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{hyperref}%liens pdf
+\usepackage{listings}%pour mettre du code
+\usepackage{color}%pour la couleur dans le code
+\usepackage{graphicx}%pour \includegraphics
+\usepackage{float}
+\usepackage{longtable}
+\usepackage[table]{xcolor}
+\lstset{breaklines=true}
+\usepackage{verbatim}
+\usepackage{array}
+\usepackage{svg}
+
+%%%%%%%%%%%%%%%%%%%% Presentation %%%%%%%%%%%%%%%%%%%
+\title{\huge Interactions Homme-Machine Évoluées\\Rapport\\Sujet : Stance detection sur tweeter}
+\author{Ingrid FIQUET\\Morgane LEGROS\\Florian MARTIN\\Thibault THÉOLOGIEN}
+\date{\today}
+
+
+\begin{document}
+	\begin{titlepage}
+		\vfill
+		\begin{figure}
+			\includegraphics[scale=0.3]{img/logoINSARouen.png}
+		\end{figure}
+
+		\maketitle
+		
+		     
+    \begin{center} 
+    \LARGE
+      \addvspace{10mm} 
+      À l'attention d'Alexandre Pauchet. 
+    \end{center} 
+
+		\vfill
+		\noindent \hrulefill
+
+	\end{titlepage}
+
+
+%%%%%%%%%%%%%%%%%%%% Corps %%%%%%%%%%%%%%%%%%%
+
+\newpage
+\tableofcontents{}
+
+\newpage
+\part{Introduction}
+	\input{src/Intro.tex}
+
+
+\newpage
+\part{Conception}
+
+\section{Conception Préliminaire}
+	\input{src/conception_preliminaire.tex}
+	
+	
+\section{Conception Détaillée}
+	\input{src/conception_detaillee.tex}
+	
+
+\newpage
+\part{Implémentation}
+	\input{src/implementation.tex}
+
+	
+\newpage
+\part{Conclusion}
+	\input{src/Conclusion.tex}
+
+
+\end{document}
+
