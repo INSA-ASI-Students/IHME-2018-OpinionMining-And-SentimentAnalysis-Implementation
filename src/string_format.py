@@ -15,10 +15,10 @@ def load_dataset(filename, delimiter):
 def format_tweet(tweet):
     formatted_tweet = tweet.lower()
     formatted_tweet = remove_semst_hashtag(formatted_tweet)
-    formatted_tweet = replace_percent_symbole(formatted_tweet)
-    formatted_tweet = replace_money_symbole(formatted_tweet)
-    formatted_tweet = remove_useless_symbole(formatted_tweet)
-    formatted_tweet = replace_other_symbole(formatted_tweet)
+    formatted_tweet = replace_percent_symbol(formatted_tweet)
+    formatted_tweet = replace_money_symbol(formatted_tweet)
+    formatted_tweet = remove_useless_symbol(formatted_tweet)
+    formatted_tweet = replace_other_symbol(formatted_tweet)
     formatted_tweet = replace_number(formatted_tweet)
     formatted_tweet = replace_mention(formatted_tweet)
     formatted_tweet = trim(formatted_tweet)
@@ -29,21 +29,21 @@ def remove_semst_hashtag(str):
     return str.replace('#semst', '')
 
 
-def replace_percent_symbole(str):
+def replace_percent_symbol(str):
     return str.replace('%', ' percent')
 
 
-def replace_other_symbole(str):
+def replace_other_symbol(str):
     return str.replace('&', 'and')
 
 
-def replace_money_symbole(str):
+def replace_money_symbol(str):
     str = str.replace('$', 'dollars ')
     str = str.replace('€', ' euros')
     return str
 
 
-def remove_useless_symbole(str):
+def remove_useless_symbol(str):
     return re.sub(r'\.|,|;|#|\?|:|-|>|\(|\)|\'|"|!|\*|<|>|_|=|\+', '', str)
 
 
