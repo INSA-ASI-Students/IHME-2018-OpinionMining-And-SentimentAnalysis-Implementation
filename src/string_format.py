@@ -18,6 +18,7 @@ def format_tweet(tweet):
     formatted_tweet = replace_percent_symbole(formatted_tweet)
     formatted_tweet = replace_money_symbole(formatted_tweet)
     formatted_tweet = remove_useless_symbole(formatted_tweet)
+    formatted_tweet = replace_other_symbole(formatted_tweet)
     formatted_tweet = replace_number(formatted_tweet)
     formatted_tweet = replace_mention(formatted_tweet)
     formatted_tweet = trim(formatted_tweet)
@@ -30,6 +31,10 @@ def remove_semst_hashtag(str):
 
 def replace_percent_symbole(str):
     return str.replace('%', ' percent')
+
+
+def replace_other_symbole(str):
+    return str.replace('&', 'and')
 
 
 def replace_money_symbole(str):
@@ -47,7 +52,9 @@ def replace_number(str):
 
 
 def replace_mention(str):
-    return re.sub(r'@[a-z]+', 'someone', str)
+    str = re.sub(r'@[a-z]+', 'someone', str)
+    str = re.sub(r'(someone )+', 'someone ', str)
+    return str
 
 
 def trim(str):
