@@ -172,6 +172,10 @@ sympy-plots-for-*.tex/
 *.upa
 *.upb
 
+# python
+*.pyc
+__pycache__
+
 # pythontex
 *.pytxcode
 pythontex-files-*/
