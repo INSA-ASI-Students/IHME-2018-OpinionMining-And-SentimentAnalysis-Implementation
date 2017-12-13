@@ -1,18 +1,21 @@
+from nltk.stem.wordnet import WordNetLemmatizer
+import nltk
 import numpy as np
 import csv
 import re
+import sys
 
 
 def load_dataset(filename, delimiter):
     dataset = []
-    with open(filename, 'r') as csvfile:
+    with open(filename, 'r', encoding='ISO 8859-2') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter=delimiter)
         for row in spamreader:
             dataset.append(row)
     return dataset
 
 
-def format_tweet(tweet):
+def format_tweet(tweet, lemmatizer=WordNetLemmatizer()):
     formatted_tweet = tweet.lower()
     formatted_tweet = remove_semst_hashtag(formatted_tweet)
     formatted_tweet = replace_percent_symbol(formatted_tweet)
@@ -22,6 +25,14 @@ def format_tweet(tweet):
     formatted_tweet = replace_number(formatted_tweet)
     formatted_tweet = replace_mention(formatted_tweet)
     formatted_tweet = trim(formatted_tweet)
+    formatted_tweet = verbs_into_infitive(formatted_tweet, lemmatizer)
+    return formatted_tweet
+
+
+def verbs_into_infitive(tweet, lemmatizer=WordNetLemmatizer()):
+    formatted_tweet = []
+    for word in tweet.split(' '):
+        formatted_tweet.append(lemmatizer.lemmatize(word, 'v'))
     return formatted_tweet
 
 
@@ -61,21 +72,28 @@ def trim(str):
     return re.sub(r' +', ' ', str.strip())
 
 
-def format_dataset(dataset):
+def format_dataset(dataset, lemmatizer=WordNetLemmatizer()):
     formatted_dataset = []
     for row in dataset:
         formatted_row = row
-        formatted_row['Tweet'] = format_tweet(row['Tweet'])
+        formatted_row['Tweet'] = format_tweet(row['Tweet'], lemmatizer)
         formatted_dataset.append(formatted_row)
-        print(formatted_row['Tweet'])
     return formatted_dataset
 
 
-def main():
-    dataset = load_dataset('./src/StanceDataset/test.csv', ',')
-    formatted_dataset = format_dataset(dataset)
+def init():
+    nltk.download('wordnet')
+    return WordNetLemmatizer()
+
+
+def main(file_path, delimiter):
+    lemmatizer = init()
+    dataset = load_dataset(file_path, delimiter)
+    formatted_dataset = format_dataset(dataset, lemmatizer)
     return 0
 
 
 if __name__ == '__main__':
-    exit(main())
+    if len(sys.argv) > 2:
+        exit(main(sys.argv[1], sys.argv[2]))
+    exit(1)
