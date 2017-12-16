@@ -100,7 +100,7 @@ def getSentiment(tagged,df):
         j=j+1
 
     # Calcul pourcentage d'erreur :
-    taux_erreur = (dim-erreur)/dim
+    taux_erreur = 1-(dim-erreur)/dim
     return taux_erreur
 
 
