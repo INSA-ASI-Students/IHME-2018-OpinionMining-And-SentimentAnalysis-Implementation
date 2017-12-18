@@ -22,9 +22,7 @@ def hash_words(dataset, hash_size=VOCAB_SIZE):
 def create_model(vocab_size, embed_output_dim):
     keras_model = Sequential()
     keras_model.add(Embedding(vocab_size, embed_output_dim))
-    keras_model.add(Dropout(0.2))
-    keras_model.add(LSTM(100))
-    keras_model.add(Dropout(0.2))
+    keras_model.add(LSTM(100, recurrent_dropout=0.2))
     keras_model.add(Dense(3, activation='relu'))
 
     return keras_model
@@ -134,6 +132,17 @@ if __name__ == '__main__':
 # LSTM (100)
 # Dropout (0.5)
 # Dense (3)
-# Activation('sigmoid')
+# Activation('relu')
 #
 # Résultat : Loss : 0.62 ; Test accuracy : 58.69%
+# Le résultat est le même qu'avec le 1er modèle : Modèle surappris?
+
+# 3ème modèle :
+# Dropout au niveau des cellules LSTM
+# Input
+# LSTM (100, recurrent_dropout=0.2)
+# Dense (3)
+# Activation('relu')
+#
+# Résultat : Loss : 0.62 ; Test accuracy : 58.69%
+# Le résultat est le même qu'avec le 1er modèle : Modèle surappris?
