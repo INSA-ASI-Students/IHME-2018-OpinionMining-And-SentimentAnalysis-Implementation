@@ -153,7 +153,7 @@ if __name__ == '__main__':
 # Input
 # LSTM (100, recurrent_dropout=0.2)
 # Dense (3)
-# Activation('relu')
+# Activation('sigmoid')
 #
 # Résultat : Loss : 0.62 ; Test accuracy : 58.69%
 # Le résultat est le même qu'avec les précédents modèles : Modèle surappris,
@@ -169,7 +169,7 @@ if __name__ == '__main__':
 # MaxPooling
 # LSTM (100, recurrent_dropout=0.2)
 # Dense (3)
-# Activation('relu')
+# Activation('sigmoid')
 #
 # Résultat : Loss : 0.44 ; Test accuracy : 73.65%
 # Le résultat est mieux après changement de la loss,
