@@ -3,7 +3,7 @@
 import sklearn.preprocessing
 
 from keras.models import Sequential
-from keras.layers import Dense, Activation, LSTM, Dropout, Embedding
+from keras.layers import Dense, LSTM, Dropout, Embedding, Conv1D, MaxPooling1D
 from keras.preprocessing import sequence
 from keras.preprocessing.text import hashing_trick
 
@@ -22,8 +22,10 @@ def hash_words(dataset, hash_size=VOCAB_SIZE):
 def create_model(vocab_size, embed_output_dim):
     keras_model = Sequential()
     keras_model.add(Embedding(vocab_size, embed_output_dim))
+    keras_model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
+    keras_model.add(MaxPooling1D(pool_size=2))
     keras_model.add(LSTM(100, recurrent_dropout=0.2))
-    keras_model.add(Dense(3, activation='relu'))
+    keras_model.add(Dense(3, activation='sigmoid'))
 
     return keras_model
 
@@ -101,7 +103,7 @@ def main():
     embedding_vector_length = 32
     keras_model = create_model(VOCAB_SIZE, embedding_vector_length)
     keras_model.compile(
-        loss='categorical_crossentropy',
+        loss='binary_crossentropy',
         optimizer='adam',
         metrics=['accuracy']
     )
@@ -119,6 +121,9 @@ if __name__ == '__main__':
 # Apprentissage avec un réseau RNN des tweets
 # pour prendre en compte dans l'apprentissage
 # les séquences de mots
+#
+# loss : categorical_crossentropy ; optimizer : adam
+#
 # Input
 # LSTM (100)
 # Dense(3)
@@ -128,6 +133,9 @@ if __name__ == '__main__':
 
 # 2ème modèle :
 # Ajout de Dropout pour éviter le surapprentissage
+#
+# loss : categorical_crossentropy ; optimizer : adam
+#
 # Input
 # LSTM (100)
 # Dropout (0.5)
@@ -138,6 +146,9 @@ if __name__ == '__main__':
 # Le résultat est le même qu'avec le 1er modèle : Modèle surappris?
 
 # 3ème modèle :
+#
+# loss : categorical_crossentropy ; optimizer : adam
+#
 # Dropout au niveau des cellules LSTM
 # Input
 # LSTM (100, recurrent_dropout=0.2)
@@ -145,4 +156,21 @@ if __name__ == '__main__':
 # Activation('relu')
 #
 # Résultat : Loss : 0.62 ; Test accuracy : 58.69%
-# Le résultat est le même qu'avec le 1er modèle : Modèle surappris?
+# Le résultat est le même qu'avec les précédents modèles : Modèle surappris,
+# sûrement un manque de données. La loss utilisée peut aussi être l'une des raisons.
+
+# 4ème modèle :
+#
+# loss : binary_crossentropy ; optimizer : adam
+#
+# Essai avec couche convolutionnelles
+# Input
+# Convolution 
+# MaxPooling
+# LSTM (100, recurrent_dropout=0.2)
+# Dense (3)
+# Activation('relu')
+#
+# Résultat : Loss : 0.44 ; Test accuracy : 73.65%
+# Le résultat est mieux après changement de la loss,
+# mais le modèle semble toujours surappris.
