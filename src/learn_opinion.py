@@ -22,8 +22,10 @@ def hash_words(dataset, hash_size=VOCAB_SIZE):
 def create_model(vocab_size, embed_output_dim):
     keras_model = Sequential()
     keras_model.add(Embedding(vocab_size, embed_output_dim))
+    keras_model.add(Dropout(0.2))
     keras_model.add(LSTM(100))
-    keras_model.add(Dense(3, activation='sigmoid'))
+    keras_model.add(Dropout(0.2))
+    keras_model.add(Dense(3, activation='relu'))
 
     return keras_model
 
@@ -119,8 +121,19 @@ if __name__ == '__main__':
 # Apprentissage avec un réseau RNN des tweets
 # pour prendre en compte dans l'apprentissage
 # les séquences de mots
+# Input
 # LSTM (100)
 # Dense(3)
 # Activation('sigmoid')
 #
-# Résultat : Test accuracy : 58.69%
+# Résultat : Loss : 0.62 ; Test accuracy : 58.69%
+
+# 2ème modèle :
+# Ajout de Dropout pour éviter le surapprentissage
+# Input
+# LSTM (100)
+# Dropout (0.5)
+# Dense (3)
+# Activation('sigmoid')
+#
+# Résultat : Loss : 0.62 ; Test accuracy : 58.69%
