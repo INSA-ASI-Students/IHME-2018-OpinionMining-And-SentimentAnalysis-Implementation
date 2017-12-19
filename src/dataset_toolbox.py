@@ -24,6 +24,7 @@ def format_tweet(tweet, lemmatizer=WordNetLemmatizer()):
     formatted_tweet = replace_other_symbol(formatted_tweet)
     formatted_tweet = replace_number(formatted_tweet)
     formatted_tweet = replace_mention(formatted_tweet)
+    formatted_tweet = replace_contractions(formatted_tweet)
     formatted_tweet = trim(formatted_tweet)
     formatted_tweet = verbs_into_infitive(formatted_tweet, lemmatizer)
     return formatted_tweet
@@ -33,7 +34,7 @@ def verbs_into_infitive(tweet, lemmatizer=WordNetLemmatizer()):
     formatted_tweet = []
     for word in tweet.split(' '):
         formatted_tweet.append(lemmatizer.lemmatize(word, 'v'))
-    return formatted_tweet
+    return ' '.join(formatted_tweet)
 
 
 def remove_semst_hashtag(str):
@@ -51,6 +52,21 @@ def replace_other_symbol(str):
 def replace_money_symbol(str):
     str = str.replace('$', 'dollars ')
     str = str.replace('€', ' euros')
+    return str
+
+
+def replace_contractions(str):
+    str = str.replace('ma\'am', 'madam')
+    str = str.replace('o\'clock', 'of the clock')
+    str = str.replace('\'m', ' am')
+    str = str.replace('\'s', ' is')
+    str = str.replace('\'ll', ' will')
+    str = str.replace('n\'t', ' not')
+    str = str.replace('\'ve', ' have')
+    str = str.replace('\'d', ' had')
+    str = str.replace('\'cause', ' because')
+    str = str.replace(' ca  ', ' can ')
+    str = str.replace(' sha  ', ' shall ')
     return str
 
 
@@ -83,6 +99,8 @@ def format_dataset(dataset, lemmatizer=WordNetLemmatizer()):
 
 def init():
     nltk.download('wordnet')
+    nltk.download('punkt')
+    nltk.download('averaged_perceptron_tagger')
     return WordNetLemmatizer()
 
 
@@ -90,6 +108,7 @@ def main(file_path, delimiter):
     lemmatizer = init()
     dataset = load_dataset(file_path, delimiter)
     formatted_dataset = format_dataset(dataset, lemmatizer)
+    print(formatted_dataset)
     return 0
 
 
