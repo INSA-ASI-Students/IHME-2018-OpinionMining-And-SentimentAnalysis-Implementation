@@ -3,7 +3,7 @@
 import sklearn.preprocessing
 
 from keras.models import Sequential
-from keras.layers import Dense, LSTM, Dropout, Embedding, Conv1D, MaxPooling1D
+from keras.layers import Dense, LSTM, SimpleRNN, Dropout, Embedding, Conv1D, MaxPooling1D
 from keras.preprocessing import sequence
 from keras.preprocessing.text import hashing_trick
 
@@ -17,7 +17,7 @@ VOCAB_SIZE = 2**20
 def hash_words(dataset, hash_size=VOCAB_SIZE):
     hashed_dataset = []
     for sentence in dataset:
-        hashed_dataset.append(hashing_trick(sentence, hash_size, hash_function='md5'))
+        hashed_dataset.append(hashing_trick(' '.join(sentence), hash_size, hash_function='md5'))
     return hashed_dataset
 
 
@@ -26,7 +26,8 @@ def create_model(vocab_size, embed_output_dim):
     keras_model.add(Embedding(vocab_size, embed_output_dim))
     keras_model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
     keras_model.add(MaxPooling1D(pool_size=2))
-    keras_model.add(LSTM(100, recurrent_dropout=0.2))
+    keras_model.add(SimpleRNN(100, recurrent_dropout=0.2))
+    keras_model.add(Dropout(0.2))
     keras_model.add(Dense(3, activation='sigmoid'))
 
     return keras_model
@@ -66,12 +67,12 @@ def main():
     max_length = 140
 
     # Pad sequence
-    np_train_tweets = np.zeros((num_tweets, max_length), dtype=np.int32)
-    for i in range(num_tweets):
-        np_train_tweets[i, :len(train_tweets[i])] = np.array(train_tweets[i])
-    # np_train_tweets = sequence.pad_sequences(train_tweets, maxlen=max_length)
+    # np_train_tweets = np.zeros((num_tweets, max_length), dtype=np.int32)
+    # for i in range(num_tweets):
+    #     np_train_tweets[i, :len(train_tweets[i])] = np.array(train_tweets[i])
+    np_train_tweets = sequence.pad_sequences(train_tweets, maxlen=max_length)
 
-    # Get Test tweets and labels
+    # # Get Test tweets and labels
     num_tweets = 0
     test_tweets = dataset_test['Tweet']
     test_subjects = dataset_test['Target']
@@ -85,12 +86,12 @@ def main():
     test_subjects = hash_words(test_subjects)
 
     # Pad sequence
-    np_test_tweets = np.zeros((num_tweets, max_length), dtype=np.int32)
-    for i in range(num_tweets):
-        np_test_tweets[i, :len(test_tweets[i])] = np.array(test_tweets[i])
-    # np_test_tweets = sequence.pad_sequences(test_tweets, maxlen=max_length)
+    # np_test_tweets = np.zeros((num_tweets, max_length), dtype=np.int32)
+    # for i in range(num_tweets):
+    #     np_test_tweets[i, :len(test_tweets[i])] = np.array(test_tweets[i])
+    np_test_tweets = sequence.pad_sequences(test_tweets, maxlen=max_length)
 
-    # One hot labels
+    # # One hot labels
     label_binarizer = sklearn.preprocessing.LabelBinarizer()
     label_binarizer.fit(range(3))
     train_labels = label_binarizer.transform(train_labels)
@@ -103,7 +104,7 @@ def main():
         optimizer='adam',
         metrics=['accuracy']
     )
-    history = keras_model.fit(np_train_tweets, train_labels, batch_size=64, epochs=3)
+    history = keras_model.fit(np_train_tweets, train_labels, batch_size=64, epochs=10)
 
     score = keras_model.evaluate(np_test_tweets, test_labels)
     print('Test score:', score[0])
@@ -171,3 +172,21 @@ if __name__ == '__main__':
 # Résultat : Loss : 0.44 ; Test accuracy : 73.65%
 # Le résultat est mieux après changement de la loss,
 # mais le modèle semble toujours surappris.
+
+# 5ème modèle :
+#
+# loss : binary_crossentropy ; optimizer : adam
+#
+# Essai avec SimpleRNN à la place d'une couche LSTM + Dropout
+# Input
+# Convolution 
+# MaxPooling
+# SimpleRNN (100, recurrent_dropout=0.2)
+# Dropout (0.2)
+# Dense (3)
+# Activation('sigmoid')
+#
+# Résultat : Loss : 0.01 ; Test accuracy : 72.54%
+# Le résultat obtenu est beaucoup plus intéressant, 
+# le modèle semble ne plus surapprendre et apprend 
+# mieux les données d'apprentissage.
