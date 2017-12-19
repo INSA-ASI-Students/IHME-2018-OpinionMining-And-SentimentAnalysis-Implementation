@@ -70,6 +70,16 @@ def replace_contractions(str):
     return str
 
 
+def remove_determinants(str):
+    # word type list: https://stackoverflow.com/questions/15388831/what-are-all-possible-pos-tags-of-nltk
+    tags = nltk.pos_tag(nltk.word_tokenize(str))
+    result = []
+    for tag in tags:
+        if tag[1] != 'DT':
+            result.append(tag[0])
+    return ' '.join(result)
+
+
 def remove_useless_symbol(str):
     return re.sub(r'\.|,|;|#|\?|:|-|>|\(|\)|\'|"|!|\*|<|>|_|=|\+', '', str)
 
