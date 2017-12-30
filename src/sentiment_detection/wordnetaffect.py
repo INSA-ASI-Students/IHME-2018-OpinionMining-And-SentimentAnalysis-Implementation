@@ -65,7 +65,7 @@ def predict(corpus, lemmatizer=WordNetLemmatizer()):
 
 
 def main():
-    dataset = dataset_manager.load('./StanceDataset/train.csv', ',')
+    dataset = dataset_manager.load('./dataset/train.csv', ',')
     prediction = predict(dataset['Tweet'])
     taux_erreur = metrics.error_rate(dataset['Sentiment'], prediction)
     print(taux_erreur)

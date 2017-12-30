@@ -45,8 +45,8 @@ def shape_data(dataset, subjects):
 
 
 def main():
-    dataset_train = dp.format(dp.load('./StanceDataset/train.csv', ','))
-    dataset_test = dp.format(dp.load('./StanceDataset/test.csv', ','))
+    dataset_train = dp.format(dp.load('./dataset/train.csv', ','))
+    dataset_test = dp.format(dp.load('./dataset/test.csv', ','))
 
     # Get Train tweets and labels
     num_tweets = 0

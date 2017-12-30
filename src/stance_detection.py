@@ -8,8 +8,8 @@ from sentiment_detection import wordnetaffect as wa
 
 def main():
     # dependancies.download_nltk()
-    train_dataset = dm.format(dm.load('./StanceDataset/train.csv', ','))
-    test_dataset = dm.format(dm.load('./StanceDataset/test.csv', ','))
+    train_dataset = dm.format(dm.load('./dataset/train.csv', ','))
+    test_dataset = dm.format(dm.load('./dataset/test.csv', ','))
     prediction = wa.predict(train_dataset['Tweet'])
     error_rate = metrics.error_rate(test_dataset['Sentiment'], prediction)
     print(error_rate)

@@ -102,7 +102,7 @@ def getSentiment(tagged, df):
 
 def main():
     print("\nDataset train.csv load \n")
-    df = loadPandaFrame("./StanceDataset/train_ingrid.csv")
+    df = loadPandaFrame("./dataset/train_ingrid.csv")
     print("Pré-traitement \n")
     lowerCase(df)
     print("Tokenization \n")
