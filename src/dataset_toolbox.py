@@ -12,7 +12,18 @@ def load_dataset(filename, delimiter):
         spamreader = csv.DictReader(csvfile, delimiter=delimiter)
         for row in spamreader:
             dataset.append(row)
+    dataset = convert(spamreader.fieldnames, dataset)
     return dataset
+
+
+def convert(fieldnames, dataset):
+    result = {}
+    for name in fieldnames:
+        result[name] = []
+    for row in dataset:
+        for name in fieldnames:
+            result[name].append(row[name])
+    return result
 
 
 def format_tweet(tweet, lemmatizer=WordNetLemmatizer()):
@@ -81,7 +92,7 @@ def remove_determinants(str):
 
 
 def remove_useless_symbol(str):
-    return re.sub(r'\.|,|;|#|\?|:|-|>|\(|\)|\'|"|!|\*|<|>|_|=|\+', '', str)
+    return re.sub(r'\.|,|;|#|\?|:|-|>|\(|\)|\'|"|!|\*|<|>|_|=|\+|/', ' ', str)
 
 
 def replace_number(str):
@@ -99,11 +110,11 @@ def trim(str):
 
 
 def format_dataset(dataset, lemmatizer=WordNetLemmatizer()):
-    formatted_dataset = []
-    for row in dataset:
-        formatted_row = row
-        formatted_row['Tweet'] = format_tweet(row['Tweet'], lemmatizer)
-        formatted_dataset.append(formatted_row)
+    formatted_dataset = dataset
+    formatted_tweets = []
+    for row in dataset['Tweet']:
+        formatted_tweets.append(format_tweet(row, lemmatizer))
+    formatted_dataset['Tweet'] = formatted_tweets
     return formatted_dataset
 
 
