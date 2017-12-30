@@ -6,10 +6,23 @@ from nltk.corpus import sentiwordnet as swn
 from nltk.tokenize import word_tokenize
 from nltk import pos_tag
 
-############### Elimination des mots neutres ###############
+
+def get_stop_words():
+    return [
+        'a', 'able', 'about', 'across', 'after', 'all', 'almost', 'also', 'am',
+        'among', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been',
+        'by', 'did', 'else', 'ever', 'every', 'for', 'from', 'get', 'got', 'had',
+        'has', 'have', 'he', 'her', 'hers', 'him', 'his', 'how', 'however', 'i',
+        'if', 'in', 'into', 'is', 'it', 'its', 'just', 'least', 'let', 'may',
+        'me', 'might', 'my', 'of', 'off', 'on', 'or', 'other', 'our', 'own',
+        'rather', 'said', 'say', 'says', 'she', 'should', 'since', 'so', 'than',
+        'that', 'the', 'their', 'them', 'then', 'there', 'these', 'they', 'this',
+        'tis', 'to', 'was', 'us', 'was', 'we', 'were', 'what', 'when', 'where',
+        'while', 'who', 'whom', 'why', 'will', 'would', 'yet', 'you', 'your'
+    ]
 
 
-def removeWord(dataset, stop_words):
+def remove_words(dataset, stop_words):
     formatted_dataset = []
     for tweet in dataset:
         reduced_tweet = []
@@ -21,7 +34,7 @@ def removeWord(dataset, stop_words):
 
 
 ############### Part of Speech Tagging ###############
-def partOfSpeechTagging(dataset):
+def part_of_speech_tagging(dataset):
     tagged_tweets = []
     for tweet in dataset:
         tokens = nltk.word_tokenize(tweet)
@@ -31,7 +44,7 @@ def partOfSpeechTagging(dataset):
 ############### Détermination du sentiments des mots de la phrase pour obtenir le sentiment général du tweet ###############
 
 
-def getSentiment(tagged, df):
+def get_sentiment(tagged, df):
     i = 0
     dim = len(tagged)
     result_sentiment = []
@@ -85,21 +98,9 @@ def getSentiment(tagged, df):
 
 def main():
     dataset = dataset_manager.load('./dataset/test.csv', ',')
-    stop_words = [
-        'a', 'able', 'about', 'across', 'after', 'all', 'almost', 'also', 'am',
-        'among', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been',
-        'by', 'did', 'else', 'ever', 'every', 'for', 'from', 'get', 'got', 'had',
-        'has', 'have', 'he', 'her', 'hers', 'him', 'his', 'how', 'however', 'i',
-        'if', 'in', 'into', 'is', 'it', 'its', 'just', 'least', 'let', 'may',
-        'me', 'might', 'my', 'of', 'off', 'on', 'or', 'other', 'our', 'own',
-        'rather', 'said', 'say', 'says', 'she', 'should', 'since', 'so', 'than',
-        'that', 'the', 'their', 'them', 'then', 'there', 'these', 'they', 'this',
-        'tis', 'to', 'was', 'us', 'was', 'we', 'were', 'what', 'when', 'where',
-        'while', 'who', 'whom', 'why', 'will', 'would', 'yet', 'you', 'your'
-    ]
-    dataset['Tweet'] = removeWord(dataset['Tweet'], stop_words)
-    tagged = partOfSpeechTagging(dataset['Tweet'])
-    taux_erreur = getSentiment(tagged, dataset)
+    dataset['Tweet'] = remove_words(dataset['Tweet'], get_stop_words())
+    tagged = part_of_speech_tagging(dataset['Tweet'])
+    taux_erreur = get_sentiment(tagged, dataset)
 
     print("Taux d'erreur : %s  " % (taux_erreur))
 
