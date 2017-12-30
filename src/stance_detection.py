@@ -12,13 +12,13 @@ def main():
     test_dataset = dm.format(dm.load('./dataset/test.csv', ','))
 
     wa_prediction = wa.predict(train_dataset['Tweet'])
-    wa_error_rate = metrics.error_rate(test_dataset['Sentiment'], wa_prediction)
+    wa_success_rate = metrics.success_rate(test_dataset['Sentiment'], wa_prediction)
 
     sw_prediction = sw.predict(train_dataset['Tweet'])
-    sw_error_rate = metrics.error_rate(test_dataset['Sentiment'], sw_prediction)
+    sw_success_rate = metrics.success_rate(test_dataset['Sentiment'], sw_prediction)
 
-    print('wordnetaffect results: %s  ' % (wa_error_rate))
-    print('sentiwordnet results: %s  ' % (sw_error_rate))
+    print('wordnetaffect results: %s  ' % (wa_success_rate))
+    print('sentiwordnet results: %s  ' % (sw_success_rate))
 
     return 0
 

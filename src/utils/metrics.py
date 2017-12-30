@@ -1,4 +1,4 @@
-def error_rate(truth, prediction):
+def success_rate(truth, prediction):
     nb_errors = 0
     dim = len(truth)
 
