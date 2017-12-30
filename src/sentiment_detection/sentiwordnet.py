@@ -33,7 +33,6 @@ def remove_words(dataset, stop_words):
     return formatted_dataset
 
 
-############### Part of Speech Tagging ###############
 def part_of_speech_tagging(dataset):
     tagged_tweets = []
     for tweet in dataset:
@@ -41,16 +40,12 @@ def part_of_speech_tagging(dataset):
         tagged_tweets.append(nltk.pos_tag(tokens))
     return tagged_tweets
 
-############### Détermination du sentiments des mots de la phrase pour obtenir le sentiment général du tweet ###############
-
 
 def get_sentiment(tagged):
-    i = 0
-    dim = len(tagged)
     result_sentiment = []
-    while i < dim:
+    for tweet in tagged:
         pos = neg = obj = count = 0
-        for word, tag in tagged[i]:
+        for word, tag in tweet:
             try:
                 ss_set = None
                 if 'NN' in tag and swn.senti_synsets(word):
@@ -78,7 +73,6 @@ def get_sentiment(tagged):
             result_sentiment.append('pos')
         elif final_score == 0:
             result_sentiment.append('other')
-        i += 1
     return result_sentiment
 
 
