@@ -118,16 +118,8 @@ def format_dataset(dataset, lemmatizer=WordNetLemmatizer()):
     return formatted_dataset
 
 
-def init():
-    nltk.download('wordnet')
-    nltk.download('sentiwordnet')
-    nltk.download('punkt')
-    nltk.download('averaged_perceptron_tagger')
-    return WordNetLemmatizer()
-
-
 def main(file_path, delimiter):
-    lemmatizer = init()
+    lemmatizer = WordNetLemmatizer()
     dataset = load_dataset(file_path, delimiter)
     formatted_dataset = format_dataset(dataset, lemmatizer)
     return 0
