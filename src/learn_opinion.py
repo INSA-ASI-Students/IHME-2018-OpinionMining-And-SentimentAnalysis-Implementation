@@ -9,7 +9,7 @@ from keras.preprocessing.text import hashing_trick
 
 import numpy as np
 
-import dataset_toolbox
+from utils import dataset_manager as dp
 
 VOCAB_SIZE = 2**20
 
@@ -45,23 +45,17 @@ def shape_data(dataset, subjects):
 
 
 def main():
-    dataset_train = dataset_toolbox.format_dataset(
-        dataset_toolbox.load_dataset('./src/StanceDataset/train_ingrid.csv', ',')
-    )
-    dataset_test = dataset_toolbox.format_dataset(
-        dataset_toolbox.load_dataset('./src/StanceDataset/test_ingrid.csv', ',')
-    )
+    dataset_train = dp.format(dp.load('./StanceDataset/train.csv', ','))
+    dataset_test = dp.format(dp.load('./StanceDataset/test.csv', ','))
 
     # Get Train tweets and labels
     num_tweets = 0
-    train_tweets = []
-    train_subjects = []
+    train_tweets = dataset_train['Tweet']
+    train_subjects = dataset_train['Target']
     train_labels = []
-    for row in dataset_train:
+    for row in dataset_train['Opinion Towards']:
         num_tweets += 1
-        train_tweets.append(row['Tweet'])
-        train_subjects.append(row['Target'])
-        train_labels.append(int(row['Opinion Towards'][0]))
+        train_labels.append(int(row[0]))
 
     # Convert Train words to numbers
     train_tweets = hash_words(train_tweets)
@@ -79,14 +73,12 @@ def main():
 
     # Get Test tweets and labels
     num_tweets = 0
-    test_tweets = []
-    test_subjects = []
+    test_tweets = dataset_test['Tweet']
+    test_subjects = dataset_test['Target']
     test_labels = []
-    for row in dataset_test:
+    for row in dataset_test['Opinion Towards']:
         num_tweets += 1
-        test_tweets.append(row['Tweet'])
-        test_subjects.append(row['Target'])
-        test_labels.append(int(row['Opinion Towards'][0]))
+        test_labels.append(int(row[0]))
 
     # Convert Test words to numbers
     test_tweets = hash_words(test_tweets)
