@@ -107,8 +107,18 @@ def main():
     lowerCase(df)
     print("Tokenization \n")
     (word, token) = tokenization(df)
-    stop_words = ['a', 'able', 'about', 'across', 'after', 'all', 'almost', 'also', 'am', 'among', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'by', 'did', 'else', 'ever', 'every', 'for', 'from', 'get', 'got', 'had', 'has', 'have', 'he', 'her', 'hers', 'him', 'his', 'how', 'however', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'just', 'least', 'let', 'may', 'me', 'might', 'my', 'of', 'off', 'on', 'or', 'other', 'our', 'own', 'rather', 'said', 'say', 'says', 'she', 'should', 'since', 'so', 'than', 'that', 'the', 'their', 'them', 'then', 'there', 'these', 'they', 'this', 'tis', 'to', 'was', 'us', 'was', 'we', 'were', 'what', 'when', 'where', 'while', 'who', 'whom', 'why', 'will', 'would', 'yet', 'you', 'your', 'They', 'Look', 'Good',
-                  'A', 'Able', 'About', 'Across', 'After', 'All', 'Almost', 'Also', 'Am', 'Among', 'An', 'And', 'Any', 'Are', 'As', 'At', 'Be', 'Because', 'Been', 'By', 'Did', 'Else', 'Ever', 'Every', 'For', 'From', 'Get', 'Got', 'Had', 'Has', 'Have', 'He', 'Her', 'Hers', 'Him', 'His', 'How', 'However', 'I', 'If', 'In', 'Into', 'Is', 'It', 'Its', 'Just', 'Least', 'Let', 'May', 'Me', 'Might', 'My', 'Of', 'Off', 'On', 'Or', 'Other', 'Our', 'Own', 'Rather', 'Said', 'Say', 'Says', 'She', 'Should', 'Since', 'So', 'Than', 'That', 'The', 'Their', 'Them', 'Then', 'There', 'These', 'They', 'This', 'Tis', 'To', 'Was', 'Us', 'Was', 'We', 'Were', 'What', 'When', 'Where', 'While', 'Who', 'Whom', 'Why', 'Will', 'Would', 'Yet', 'You', 'Your', '!', '@', '#', '"', '$', '(', '.', ')']
+    stop_words = [
+        'a', 'able', 'about', 'across', 'after', 'all', 'almost', 'also', 'am',
+        'among', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been',
+        'by', 'did', 'else', 'ever', 'every', 'for', 'from', 'get', 'got', 'had',
+        'has', 'have', 'he', 'her', 'hers', 'him', 'his', 'how', 'however', 'i',
+        'if', 'in', 'into', 'is', 'it', 'its', 'just', 'least', 'let', 'may',
+        'me', 'might', 'my', 'of', 'off', 'on', 'or', 'other', 'our', 'own',
+        'rather', 'said', 'say', 'says', 'she', 'should', 'since', 'so', 'than',
+        'that', 'the', 'their', 'them', 'then', 'there', 'these', 'they', 'this',
+        'tis', 'to', 'was', 'us', 'was', 'we', 'were', 'what', 'when', 'where',
+        'while', 'who', 'whom', 'why', 'will', 'would', 'yet', 'you', 'your'
+    ]
     removeWord(word, stop_words, df, token)
     print("Part of Speech Tagging \n")
     tagged = partOfSpeechTagging(df)
@@ -120,6 +130,9 @@ def main():
 
 
 if __name__ == '__main__':
+    import sys
+    sys.path.insert(0, '')
+    from utils import dataset_manager, metrics
     exit(main())
 
 
