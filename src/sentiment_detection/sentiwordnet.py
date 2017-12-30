@@ -76,6 +76,12 @@ def get_sentiment(tagged):
     return result_sentiment
 
 
+def predict(dataset):
+    tweets = remove_words(dataset, get_stop_words())
+    tagged = part_of_speech_tagging(tweets)
+    return get_sentiment(tagged)
+
+
 def main():
     dataset = dataset_manager.load('./dataset/test.csv', ',')
     dataset['Tweet'] = remove_words(dataset['Tweet'], get_stop_words())

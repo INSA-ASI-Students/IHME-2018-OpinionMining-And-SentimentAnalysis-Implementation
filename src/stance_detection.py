@@ -10,9 +10,16 @@ def main():
     # dependancies.download_nltk()
     train_dataset = dm.format(dm.load('./dataset/train.csv', ','))
     test_dataset = dm.format(dm.load('./dataset/test.csv', ','))
-    prediction = wa.predict(train_dataset['Tweet'])
-    error_rate = metrics.error_rate(test_dataset['Sentiment'], prediction)
-    print(error_rate)
+
+    wa_prediction = wa.predict(train_dataset['Tweet'])
+    wa_error_rate = metrics.error_rate(test_dataset['Sentiment'], wa_prediction)
+
+    sw_prediction = sw.predict(train_dataset['Tweet'])
+    sw_error_rate = metrics.error_rate(test_dataset['Sentiment'], sw_prediction)
+
+    print('wordnetaffect results: %s  ' % (wa_error_rate))
+    print('sentiwordnet results: %s  ' % (sw_error_rate))
+
     return 0
 
 
