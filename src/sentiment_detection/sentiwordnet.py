@@ -44,7 +44,7 @@ def part_of_speech_tagging(dataset):
 ############### Détermination du sentiments des mots de la phrase pour obtenir le sentiment général du tweet ###############
 
 
-def get_sentiment(tagged, df):
+def get_sentiment(tagged):
     i = 0
     dim = len(tagged)
     result_sentiment = []
@@ -72,8 +72,6 @@ def get_sentiment(tagged, df):
                 pass
 
         final_score = pos - neg
-        df['final_score'] = final_score
-
         if final_score < 0:
             result_sentiment.append('neg')
         elif final_score > 0:
@@ -81,28 +79,16 @@ def get_sentiment(tagged, df):
         elif final_score == 0:
             result_sentiment.append('other')
         i += 1
-
-    print("\nCalcul de l'erreur \n")
-    erreur = 0
-    label_true = np.array(df['Sentiment'])
-    dim = len(label_true)
-    for j in range(dim):
-        if label_true[j] != result_sentiment[j]:
-            erreur = erreur + 1
-        j = j + 1
-
-    # Calcul pourcentage d'erreur :
-    taux_erreur = 1 - (dim - erreur) / dim
-    return taux_erreur
+    return result_sentiment
 
 
 def main():
     dataset = dataset_manager.load('./dataset/test.csv', ',')
     dataset['Tweet'] = remove_words(dataset['Tweet'], get_stop_words())
     tagged = part_of_speech_tagging(dataset['Tweet'])
-    taux_erreur = get_sentiment(tagged, dataset)
-
-    print("Taux d'erreur : %s  " % (taux_erreur))
+    prediction = get_sentiment(tagged)
+    error_rate = metrics.error_rate(dataset['Sentiment'], prediction)
+    print("Taux d'erreur : %s  " % (error_rate))
 
     return 0
 
