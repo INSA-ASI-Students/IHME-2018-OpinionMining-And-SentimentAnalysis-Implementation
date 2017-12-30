@@ -6,39 +6,7 @@ from nltk.corpus import sentiwordnet as swn
 from nltk.tokenize import word_tokenize
 from nltk import pos_tag
 
-
-############### Dataset ###############
-
-def loadPandaFrame(filename):
-    df = pd.read_csv(filename)
-    return df
-
-############### MINUSCULE ###############
-
-
-def lowerCase(df):
-    train_tweet = df['Tweet']
-    train_tweet_pretraitement = [item.lower() for item in train_tweet]
-    df_tweet_lower = pd.DataFrame(train_tweet_pretraitement)
-    df['tweet_lower'] = df_tweet_lower
-
-
-############### Token extraction ###############
-# def tokenization(df):
-#     token = df.apply(lambda row: nltk.word_tokenize(row['tweet_lower']), axis=1)
-#     df['tokenized_words'] = token
-#     return df['tokenized_words'], token
-def tokenization(dataset):
-    tokens = []
-    for tweet in dataset:
-        tokens.append(nltk.word_tokenize(tweet))
-    return tokens
-
-
 ############### Elimination des mots neutres ###############
-# def removeWord(word, stop_words, df, token):
-#     token_reduce = token.apply(lambda x: [word for word in x if word not in stop_words])
-#     df['token_reduce'] = token_reduce
 
 
 def removeWord(dataset, stop_words):
@@ -53,14 +21,11 @@ def removeWord(dataset, stop_words):
 
 
 ############### Part of Speech Tagging ###############
-# def partOfSpeechTagging(df):
-#     df['tagged_tweet'] = df.apply(lambda df: nltk.pos_tag(df['token_reduce']), axis=1)
-#     # Transformation en array
-#     return np.array(df['tagged_tweet'])
-def partOfSpeechTagging(tokens):
+def partOfSpeechTagging(dataset):
     tagged_tweets = []
-    for row in tokens:
-        tagged_tweets.append(nltk.pos_tag(row))
+    for tweet in dataset:
+        tokens = nltk.word_tokenize(tweet)
+        tagged_tweets.append(nltk.pos_tag(tokens))
     return tagged_tweets
 
 ############### Détermination du sentiments des mots de la phrase pour obtenir le sentiment général du tweet ###############
@@ -94,7 +59,6 @@ def getSentiment(tagged, df):
                 pass
 
         final_score = pos - neg
-        # print("Score sentiment du tweet n° %d : %s  " % (i, final_score))
         df['final_score'] = final_score
 
         if final_score < 0:
@@ -103,8 +67,6 @@ def getSentiment(tagged, df):
             result_sentiment.append('pos')
         elif final_score == 0:
             result_sentiment.append('other')
-
-        # print(result_sentiment[i])
         i += 1
 
     print("\nCalcul de l'erreur \n")
@@ -122,14 +84,7 @@ def getSentiment(tagged, df):
 
 
 def main():
-    # print("\nDataset train.csv load \n")
-    # df = loadPandaFrame("./dataset/train_ingrid.csv")
-    # print("Pré-traitement \n")
-    # lowerCase(df)
     dataset = dataset_manager.load('./dataset/test.csv', ',')
-    # dataset = dataset_manager.format(dataset)
-
-    # (word, token) = tokenization(dataset)
     stop_words = [
         'a', 'able', 'about', 'across', 'after', 'all', 'almost', 'also', 'am',
         'among', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been',
@@ -143,8 +98,7 @@ def main():
         'while', 'who', 'whom', 'why', 'will', 'would', 'yet', 'you', 'your'
     ]
     dataset['Tweet'] = removeWord(dataset['Tweet'], stop_words)
-    tokens = tokenization(dataset['Tweet'])
-    tagged = partOfSpeechTagging(tokens)
+    tagged = partOfSpeechTagging(dataset['Tweet'])
     taux_erreur = getSentiment(tagged, dataset)
 
     print("Taux d'erreur : %s  " % (taux_erreur))
