@@ -11,11 +11,7 @@ from nltk import sent_tokenize, word_tokenize, pos_tag
 
 def loadPandaFrame(filename):
     df = pd.read_csv(filename)
-    test_tweet = df['Tweet']
-    train_tweet = df['Tweet']
-    train_sentiment = df['Sentiment']
-    test_sentiment = df['Sentiment']
-    return train_tweet, train_sentiment, test_tweet, test_sentiment
+    return df['Tweet'], df['Sentiment']
 
 
 def bag_of_words_wn(tag):
@@ -30,25 +26,19 @@ def bag_of_words_wn(tag):
     return None
 
 
-def convertSentimentIntoClass(train_y, test_y):
-    for i in range(len(train_y)):
-        if train_y[i] == 'pos':
-            train_y[i] = 1
-        elif train_y[i] == 'neg':
-            train_y[i] = 0
-        elif train_y[i] == 'other':
-            train_y[i] = 2
-
-    for i in range(len(test_y)):
-        if test_y[i] == 'pos':
-            test_y[i] = 1
-        elif test_y[i] == 'neg':
-            test_y[i] = 0
-        elif test_y[i] == 'other':
-            test_y[i] = 2
+def convertSentimentIntoClass(dataset):
+    converted_dataset = []
+    for i in range(len(dataset)):
+        if dataset[i] == 'pos':
+            converted_dataset.append(1)
+        elif dataset[i] == 'neg':
+            converted_dataset.append(0)
+        elif dataset[i] == 'other':
+            converted_dataset.append(2)
+    return converted_dataset
 
 
-def swn_polarity(text, lemmatizer):
+def swn_polarity(text, lemmatizer=WordNetLemmatizer()):
     sentiment = 0.0
     tokens_count = 0
 
@@ -103,20 +93,23 @@ def swn_polarity(text, lemmatizer):
         return 2
 
 
+# def start(dataset):
+
+
 def main():
     print("\nDataset train.csv load \n")
-    (train_X, train_y, test_X, test_y) = loadPandaFrame("./StanceDataset/train_ingrid.csv")
+    (tweets, labels) = loadPandaFrame("./StanceDataset/train_ingrid.csv")
     lemmatizer = WordNetLemmatizer()
 
-    convertSentimentIntoClass(train_y, test_y)
-    dim = len(train_X)
+    labels = convertSentimentIntoClass(labels)
+    dim = len(tweets)
     #print (swn_polarity(train_X[1],lemmatizer), train_y[1])
-    Nberreur = 0
+    nb_errors = 0
     for j in range(dim):
-        if swn_polarity(train_X[j], lemmatizer) != train_y[j]:
-            Nberreur = Nberreur + 1
+        if swn_polarity(tweets[j], lemmatizer) != labels[j]:
+            nb_errors = nb_errors + 1
         j = j + 1
-    taux_erreur = 1 - (dim - Nberreur) / dim
+    taux_erreur = 1 - (dim - nb_errors) / dim
     print(taux_erreur)
     return 0
 
