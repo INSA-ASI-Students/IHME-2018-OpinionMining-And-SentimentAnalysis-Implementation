@@ -1,29 +1,8 @@
 from nltk.stem.wordnet import WordNetLemmatizer
 import nltk
-import numpy as np
-import csv
 import re
 import sys
-
-
-def load_dataset(filename, delimiter):
-    dataset = []
-    with open(filename, 'r', encoding='ISO 8859-2') as csvfile:
-        spamreader = csv.DictReader(csvfile, delimiter=delimiter)
-        for row in spamreader:
-            dataset.append(row)
-    dataset = convert(spamreader.fieldnames, dataset)
-    return dataset
-
-
-def convert(fieldnames, dataset):
-    result = {}
-    for name in fieldnames:
-        result[name] = []
-    for row in dataset:
-        for name in fieldnames:
-            result[name].append(row[name])
-    return result
+from . import dataset_manager
 
 
 def format_tweet(tweet, lemmatizer=WordNetLemmatizer()):
@@ -109,19 +88,17 @@ def trim(str):
     return re.sub(r' +', ' ', str.strip())
 
 
-def format_dataset(dataset, lemmatizer=WordNetLemmatizer()):
-    formatted_dataset = dataset
+def format(dataset, lemmatizer=WordNetLemmatizer()):
     formatted_tweets = []
-    for row in dataset['Tweet']:
+    for row in dataset:
         formatted_tweets.append(format_tweet(row, lemmatizer))
-    formatted_dataset['Tweet'] = formatted_tweets
-    return formatted_dataset
+    return formatted_tweets
 
 
 def main(file_path, delimiter):
     lemmatizer = WordNetLemmatizer()
-    dataset = load_dataset(file_path, delimiter)
-    formatted_dataset = format_dataset(dataset, lemmatizer)
+    dataset = dataset_manager.load(file_path, delimiter)
+    formatted_tweets = format(dataset['Tweet'], lemmatizer)
     return 0
 
 

@@ -7,8 +7,6 @@ from nltk.corpus import wordnet as wn
 from nltk import sent_tokenize, word_tokenize, pos_tag
 
 
-############### Dataset ###############
-
 def loadPandaFrame(filename):
     df = pd.read_csv(filename)
     return df['Tweet'], df['Sentiment']
@@ -24,18 +22,6 @@ def bag_of_words_wn(tag):
     elif tag.startswith('V'):
         return wn.VERB
     return None
-
-
-def convertSentimentIntoClass(dataset):
-    converted_dataset = []
-    for i in range(len(dataset)):
-        if dataset[i] == 'pos':
-            converted_dataset.append(1)
-        elif dataset[i] == 'neg':
-            converted_dataset.append(0)
-        elif dataset[i] == 'other':
-            converted_dataset.append(2)
-    return converted_dataset
 
 
 def swn_polarity(text, lemmatizer=WordNetLemmatizer()):
@@ -70,23 +56,11 @@ def swn_polarity(text, lemmatizer=WordNetLemmatizer()):
             tokens_count += 1
 
     if sentiment < 0:
-        return 0
+        return 'neg'
     elif sentiment > 0:
-        return 1
+        return 'pos'
     elif sentiment == 0:
-        return 2
-
-
-def check_performances(truth, prediction):
-    truth = convertSentimentIntoClass(truth)
-    nb_errors = 0
-    dim = len(truth)
-
-    for i in range(dim):
-        if prediction[i] != truth[i]:
-            nb_errors = nb_errors + 1
-
-    return 1 - (dim - nb_errors) / dim
+        return 'other'
 
 
 def predict(corpus, lemmatizer=WordNetLemmatizer()):
@@ -97,12 +71,15 @@ def predict(corpus, lemmatizer=WordNetLemmatizer()):
 
 
 def main():
-    (tweets, labels) = loadPandaFrame("./StanceDataset/train_ingrid.csv")
-    prediction = predict(tweets)
-    taux_erreur = check_performances(labels, prediction)
+    dataset = dataset_manager.load('./StanceDataset/train.csv', ',')
+    prediction = predict(dataset['Tweet'])
+    taux_erreur = metrics.error_rate(dataset['Sentiment'], prediction)
     print(taux_erreur)
     return 0
 
 
 if __name__ == '__main__':
+    import sys
+    sys.path.insert(0, '')
+    from utils import dataset_manager, metrics
     exit(main())
