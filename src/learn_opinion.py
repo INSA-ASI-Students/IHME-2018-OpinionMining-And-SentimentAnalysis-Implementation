@@ -13,11 +13,13 @@ import dataset_toolbox
 
 VOCAB_SIZE = 2**20
 
+
 def hash_words(dataset, hash_size=VOCAB_SIZE):
     hashed_dataset = []
     for sentence in dataset:
         hashed_dataset.append(hashing_trick(sentence, hash_size, hash_function='md5'))
     return hashed_dataset
+
 
 def create_model(vocab_size, embed_output_dim):
     keras_model = Sequential()
@@ -29,6 +31,7 @@ def create_model(vocab_size, embed_output_dim):
 
     return keras_model
 
+
 def shape_data(dataset, subjects):
     """
     Transform a 2D numpy array of dimension N, M
@@ -39,6 +42,7 @@ def shape_data(dataset, subjects):
     F : Number of feature in a sequence
     """
     pass
+
 
 def main():
     dataset_train = dataset_toolbox.format_dataset(
@@ -114,6 +118,7 @@ def main():
     print('Test accuracy:', score[1] * 100, '%')
     return 0
 
+
 if __name__ == '__main__':
     exit(main())
 
@@ -165,7 +170,7 @@ if __name__ == '__main__':
 #
 # Essai avec couche convolutionnelles
 # Input
-# Convolution 
+# Convolution
 # MaxPooling
 # LSTM (100, recurrent_dropout=0.2)
 # Dense (3)

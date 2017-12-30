@@ -1,15 +1,9 @@
 ############### Librairies ###############
-import pandas as pd
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import sentiwordnet as swn
 from nltk.corpus import wordnet as wn
 from nltk import sent_tokenize, word_tokenize, pos_tag
-
-
-def loadPandaFrame(filename):
-    df = pd.read_csv(filename)
-    return df['Tweet'], df['Sentiment']
 
 
 def bag_of_words_wn(tag):
