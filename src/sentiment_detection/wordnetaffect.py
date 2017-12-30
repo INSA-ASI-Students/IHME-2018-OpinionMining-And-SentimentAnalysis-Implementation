@@ -77,21 +77,29 @@ def swn_polarity(text, lemmatizer=WordNetLemmatizer()):
         return 2
 
 
-# def start(dataset):
+def check_performances(truth, prediction):
+    truth = convertSentimentIntoClass(truth)
+    nb_errors = 0
+    dim = len(truth)
+
+    for i in range(dim):
+        if prediction[i] != truth[i]:
+            nb_errors = nb_errors + 1
+
+    return 1 - (dim - nb_errors) / dim
+
+
+def predict(corpus, lemmatizer=WordNetLemmatizer()):
+    predicted_sentiments = []
+    for tweet in corpus:
+        predicted_sentiments.append(swn_polarity(tweet, lemmatizer))
+    return predicted_sentiments
 
 
 def main():
     (tweets, labels) = loadPandaFrame("./StanceDataset/train_ingrid.csv")
-    lemmatizer = WordNetLemmatizer()
-
-    labels = convertSentimentIntoClass(labels)
-    dim = len(tweets)
-    nb_errors = 0
-    for j in range(dim):
-        if swn_polarity(tweets[j], lemmatizer) != labels[j]:
-            nb_errors = nb_errors + 1
-        j = j + 1
-    taux_erreur = 1 - (dim - nb_errors) / dim
+    prediction = predict(tweets)
+    taux_erreur = check_performances(labels, prediction)
     print(taux_erreur)
     return 0
 
