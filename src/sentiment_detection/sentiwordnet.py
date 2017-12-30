@@ -24,26 +24,47 @@ def lowerCase(df):
 
 
 ############### Token extraction ###############
-def tokenization(df):
-    token = df.apply(lambda row: nltk.word_tokenize(row['tweet_lower']), axis=1)
-    df['tokenized_words'] = token
-    return df['tokenized_words'], token
+# def tokenization(df):
+#     token = df.apply(lambda row: nltk.word_tokenize(row['tweet_lower']), axis=1)
+#     df['tokenized_words'] = token
+#     return df['tokenized_words'], token
+def tokenization(dataset):
+    tokens = []
+    for tweet in dataset:
+        tokens.append(nltk.word_tokenize(tweet))
+    return tokens
 
 
 ############### Elimination des mots neutres ###############
-def removeWord(word, stop_words, df, token):
-    token_reduce = token.apply(lambda x: [word for word in x if word not in stop_words])
-    df['token_reduce'] = token_reduce
+# def removeWord(word, stop_words, df, token):
+#     token_reduce = token.apply(lambda x: [word for word in x if word not in stop_words])
+#     df['token_reduce'] = token_reduce
+
+
+def removeWord(dataset, stop_words):
+    formatted_dataset = []
+    for tweet in dataset:
+        reduced_tweet = []
+        for word in tweet.split(' '):
+            if word not in stop_words:
+                reduced_tweet.append(word)
+        formatted_dataset.append(' '.join(reduced_tweet))
+    return formatted_dataset
 
 
 ############### Part of Speech Tagging ###############
-def partOfSpeechTagging(df):
-    df['tagged_tweet'] = df.apply(lambda df: nltk.pos_tag(df['token_reduce']), axis=1)
-    # Transformation en array
-    return np.array(df['tagged_tweet'])
-
+# def partOfSpeechTagging(df):
+#     df['tagged_tweet'] = df.apply(lambda df: nltk.pos_tag(df['token_reduce']), axis=1)
+#     # Transformation en array
+#     return np.array(df['tagged_tweet'])
+def partOfSpeechTagging(tokens):
+    tagged_tweets = []
+    for row in tokens:
+        tagged_tweets.append(nltk.pos_tag(row))
+    return tagged_tweets
 
 ############### Détermination du sentiments des mots de la phrase pour obtenir le sentiment général du tweet ###############
+
 
 def getSentiment(tagged, df):
     i = 0
@@ -73,7 +94,7 @@ def getSentiment(tagged, df):
                 pass
 
         final_score = pos - neg
-        print("Score sentiment du tweet n° %d : %s  " % (i, final_score))
+        # print("Score sentiment du tweet n° %d : %s  " % (i, final_score))
         df['final_score'] = final_score
 
         if final_score < 0:
@@ -83,7 +104,7 @@ def getSentiment(tagged, df):
         elif final_score == 0:
             result_sentiment.append('other')
 
-        print(result_sentiment[i])
+        # print(result_sentiment[i])
         i += 1
 
     print("\nCalcul de l'erreur \n")
@@ -101,12 +122,14 @@ def getSentiment(tagged, df):
 
 
 def main():
-    print("\nDataset train.csv load \n")
-    df = loadPandaFrame("./dataset/train_ingrid.csv")
-    print("Pré-traitement \n")
-    lowerCase(df)
-    print("Tokenization \n")
-    (word, token) = tokenization(df)
+    # print("\nDataset train.csv load \n")
+    # df = loadPandaFrame("./dataset/train_ingrid.csv")
+    # print("Pré-traitement \n")
+    # lowerCase(df)
+    dataset = dataset_manager.load('./dataset/test.csv', ',')
+    # dataset = dataset_manager.format(dataset)
+
+    # (word, token) = tokenization(dataset)
     stop_words = [
         'a', 'able', 'about', 'across', 'after', 'all', 'almost', 'also', 'am',
         'among', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been',
@@ -119,11 +142,11 @@ def main():
         'tis', 'to', 'was', 'us', 'was', 'we', 'were', 'what', 'when', 'where',
         'while', 'who', 'whom', 'why', 'will', 'would', 'yet', 'you', 'your'
     ]
-    removeWord(word, stop_words, df, token)
-    print("Part of Speech Tagging \n")
-    tagged = partOfSpeechTagging(df)
-    print('Détermination du sentiment de chaque token puis du sentiment général \n')
-    taux_erreur = getSentiment(tagged, df)
+    dataset['Tweet'] = removeWord(dataset['Tweet'], stop_words)
+    tokens = tokenization(dataset['Tweet'])
+    tagged = partOfSpeechTagging(tokens)
+    taux_erreur = getSentiment(tagged, dataset)
+
     print("Taux d'erreur : %s  " % (taux_erreur))
 
     return 0
