@@ -43,26 +43,16 @@ def swn_polarity(text, lemmatizer=WordNetLemmatizer()):
     tokens_count = 0
 
     raw_sentences = sent_tokenize(text)
-    #print ("raw_sentences")
-    #print (raw_sentences)
 
     for raw_sentence in raw_sentences:
-        #print ("word_tokenize(raw_sentence)")
-        #print (word_tokenize(raw_sentence))
         tagged_sentence = pos_tag(word_tokenize(raw_sentence))
-        #print ("tagged_sentence")
-        #print (tagged_sentence)
 
         for word, tag in tagged_sentence:
             wn_tag = bag_of_words_wn(tag)
-            #print ("wn_tag")
-            #print (wn_tag)
             if wn_tag not in (wn.NOUN, wn.ADJ, wn.ADV):
                 continue
 
             lemma = lemmatizer.lemmatize(word, pos=wn_tag)
-            #print ("lemma")
-            #print (lemma)
 
             if not lemma:
                 continue
@@ -74,16 +64,10 @@ def swn_polarity(text, lemmatizer=WordNetLemmatizer()):
 
             # Take the first sense, the most common
             synset = synsets[0]
-            #print ("synset")
-            #print (synset)
             swn_synset = swn.senti_synset(synset.name())
-            #print ("swn_synset")
-            #print (swn_synset)
 
             sentiment += swn_synset.pos_score() - swn_synset.neg_score()
             tokens_count += 1
-            #print ("sentiment")
-            #print (sentiment)
 
     if sentiment < 0:
         return 0
@@ -97,13 +81,11 @@ def swn_polarity(text, lemmatizer=WordNetLemmatizer()):
 
 
 def main():
-    print("\nDataset train.csv load \n")
     (tweets, labels) = loadPandaFrame("./StanceDataset/train_ingrid.csv")
     lemmatizer = WordNetLemmatizer()
 
     labels = convertSentimentIntoClass(labels)
     dim = len(tweets)
-    #print (swn_polarity(train_X[1],lemmatizer), train_y[1])
     nb_errors = 0
     for j in range(dim):
         if swn_polarity(tweets[j], lemmatizer) != labels[j]:
