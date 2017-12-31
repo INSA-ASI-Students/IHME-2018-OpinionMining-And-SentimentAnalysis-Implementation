@@ -7,10 +7,12 @@ from utils import dataset_manager as dm
 from sentiment_detection import sentiwordnet as sw
 from sentiment_detection import wordnetaffect as wa
 
+DELIMITER = ','
+
 
 def main():
     (filename, sentiment, opinion, stance, output) = define_parameters(sys.argv)
-    dataset = dm.format(dm.load(filename, ','))
+    dataset = dm.format(dm.load(filename, DELIMITER))
     sentiment_prediction = predict_sentiment(sentiment, dataset)
     if sentiment_prediction == None:
         print('Invalid sentiment method')
@@ -18,6 +20,7 @@ def main():
     else:
         print_results('Sentiment', sentiment, dataset, sentiment_prediction)
 
+    # dm.save(output, dataset, DELIMITER)
     return 0
 
 

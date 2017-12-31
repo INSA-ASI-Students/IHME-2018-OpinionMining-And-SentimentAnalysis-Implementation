@@ -25,3 +25,17 @@ def _convert(fieldnames, dataset):
 def format(dataset):
     dataset['Tweet'] = format_tweets(dataset['Tweet'])
     return dataset
+
+
+def save(filename, dataset, delimiter):
+    with open(filename, 'w') as csvfile:
+        fieldnames = []
+        for col in dataset:
+            fieldnames.append(col)
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for i in range(0, len(dataset[fieldnames[0]])):
+            row = {}
+            for col in fieldnames:
+                row[col] = dataset[col][i]
+            writer.writerow(row)
