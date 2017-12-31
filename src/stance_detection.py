@@ -13,12 +13,27 @@ DELIMITER = ','
 def main():
     (filename, sentiment, opinion, stance, output) = define_parameters(sys.argv)
     dataset = dm.format(dm.load(filename, DELIMITER))
+
     sentiment_prediction = predict_sentiment(sentiment, dataset)
     if sentiment_prediction == None:
         print('Invalid sentiment method')
         return 1
     else:
         print_results('Sentiment', sentiment, dataset, sentiment_prediction)
+
+    opinion_prediction = predict_opinion(opinion, dataset)
+    if opinion_prediction == None:
+        print('Invalid opinion method')
+        return 1
+    else:
+        print_results('Opinion Towards', opinion, dataset, opinion_prediction)
+
+    stance_prediction = predict_stance(stance, dataset)
+    if stance_prediction == None:
+        print('Invalid stance method')
+        return 1
+    else:
+        print_results('Stance', stance, dataset, stance_prediction)
 
     # dm.save(output, dataset, DELIMITER)
     return 0
@@ -29,6 +44,14 @@ def predict_sentiment(sentiment, dataset):
         return wa.predict(dataset['Tweet'])
     elif sentiment == 'sentiwordnet':
         return sw.predict(dataset['Tweet'])
+    return None
+
+
+def predict_opinion(opinion, dataset):
+    return None
+
+
+def predict_stance(stance, dataset):
     return None
 
 
