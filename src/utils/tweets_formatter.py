@@ -10,13 +10,16 @@ def format_tweet(tweet, lemmatizer=WordNetLemmatizer()):
     formatted_tweet = remove_semst_hashtag(formatted_tweet)
     formatted_tweet = replace_percent_symbol(formatted_tweet)
     formatted_tweet = replace_money_symbol(formatted_tweet)
+
+    # Ne pas appliquer avec sentiment analysis
+    formatted_tweet = replace_contractions(formatted_tweet)
+    formatted_tweet = verbs_into_infitive(formatted_tweet, lemmatizer)
+
     formatted_tweet = remove_useless_symbol(formatted_tweet)
     formatted_tweet = replace_other_symbol(formatted_tweet)
     formatted_tweet = replace_number(formatted_tweet)
     formatted_tweet = replace_mention(formatted_tweet)
-    formatted_tweet = replace_contractions(formatted_tweet)
     formatted_tweet = trim(formatted_tweet)
-    formatted_tweet = verbs_into_infitive(formatted_tweet, lemmatizer)
     return formatted_tweet
 
 
@@ -36,7 +39,9 @@ def replace_percent_symbol(str):
 
 
 def replace_other_symbol(str):
-    return str.replace('&', 'and')
+    str = str.replace('&', 'and')
+    str = str.replace('@', 'at')
+    return str
 
 
 def replace_money_symbol(str):
