@@ -2,8 +2,8 @@
 
 import sklearn.preprocessing
 
-from keras.models import Sequential
-from keras.layers import Dense, SimpleRNN, Dropout, Embedding, Conv1D, MaxPooling1D
+from keras.models import Sequential, Model
+from keras.layers import Input, Dense, SimpleRNN, Dropout, Embedding, Conv1D, MaxPooling1D
 from keras.preprocessing import sequence
 from keras.preprocessing.text import hashing_trick
 
@@ -30,15 +30,28 @@ def hash_words(dataset, hash_size=VOCAB_SIZE):
     return hashed_dataset
 
 
-def create_model(vocab_size, embed_output_dim):
-    keras_model = Sequential()
-    keras_model.add(Embedding(vocab_size, embed_output_dim))
-    keras_model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
-    keras_model.add(MaxPooling1D(pool_size=2))
-    keras_model.add(SimpleRNN(100, recurrent_dropout=0.2))
-    keras_model.add(Dropout(0.2))
-    keras_model.add(Dense(3, activation='sigmoid'))
+# def create_model(vocab_size, embed_output_dim):
+#     keras_model = Sequential()
+#     keras_model.add(Embedding(vocab_size, embed_output_dim))
+#     keras_model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
+#     keras_model.add(MaxPooling1D(pool_size=2))
+#     keras_model.add(SimpleRNN(100, recurrent_dropout=0.2))
+#     keras_model.add(Dropout(0.2))
+#     keras_model.add(Dense(3, activation='sigmoid'))
 
+#     return keras_model
+
+def create_model(sentence_length, vocab_size, embed_output_dim):
+    tweets = Input(shape=(sentence_length,), name='tweets')
+    embed_tweets = Embedding(vocab_size, embed_output_dim)(tweets)
+    tweet_conv_1 = Conv1D(filters=32, kernel_size=3, padding='same', activation='relu')(embed_tweets)
+    tweet_pool_1 = MaxPooling1D(pool_size=2)(tweet_conv_1)
+    rnn = SimpleRNN(100, recurrent_dropout=0.2)(tweet_pool_1)
+    dropout = Dropout(0.2)(rnn)
+    output = Dense(3, activation='sigmoid')(dropout)
+
+    # "subjects": subjects
+    keras_model = Model(inputs=[tweets], outputs=output)
     return keras_model
 
 def format_dataset(dataset):
@@ -67,23 +80,28 @@ def format_labels(dataset):
 
 def train(dataset_train, dataset_test):
     # Get Train tweets, subjects and labels
-    train_tweets, train_subjects, np_train_tweets = format_dataset(dataset_train)
+    _, _, np_train_tweets = format_dataset(dataset_train)
     train_labels = format_labels(dataset_train)
 
     # Get Test tweets, subjects and labels
-    test_tweets, test_subjects, np_test_tweets = format_dataset(dataset_test)
+    _, _, np_test_tweets = format_dataset(dataset_test)
     test_labels = format_labels(dataset_test)
 
     # Train
     embedding_vector_length = 32
-    keras_model = create_model(VOCAB_SIZE, embedding_vector_length)
+    keras_model = create_model(MAX_SENTENCE_LENGTH, VOCAB_SIZE, embedding_vector_length)
     keras_model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
         metrics=['accuracy']
     )
 
-    history = keras_model.fit(np_train_tweets, train_labels, batch_size=BATCH_SIZE, epochs=10)
+    keras_model.fit(
+        {'tweets': np_train_tweets},
+        train_labels,
+        batch_size=BATCH_SIZE,
+        epochs=10
+    )
 
     # Test
     score = keras_model.evaluate(np_test_tweets, test_labels)
@@ -93,8 +111,11 @@ def train(dataset_train, dataset_test):
     return keras_model
 
 def predict(model, dataset):
-    tweets, subjects, np_tweets = format_dataset(dataset)
-    prediction = model.predict(np_tweets, batch_size=BATCH_SIZE)
+    _, subjects, np_tweets = format_dataset(dataset)
+    prediction = model.predict(
+        {'tweets': np_tweets},
+        batch_size=BATCH_SIZE
+    )
     prediction = np.argmax(prediction, axis=1)
 
     return prediction
