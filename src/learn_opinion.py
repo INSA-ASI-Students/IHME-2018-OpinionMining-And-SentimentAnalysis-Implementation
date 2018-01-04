@@ -59,7 +59,6 @@ def format_labels(dataset):
     labels = []
     for row in dataset['Opinion Towards']:
         labels.append(int(row[0]))
-    print(labels)
 
     # One hot labels
     labels = LABEL_BINARIZER.transform(labels)
