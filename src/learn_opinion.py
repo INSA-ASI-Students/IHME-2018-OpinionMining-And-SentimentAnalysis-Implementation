@@ -16,6 +16,8 @@ from utils import dataset_manager as dp
 MAX_SENTENCE_LENGTH = 140
 # Setting the max number of existing words
 VOCAB_SIZE = 2**20
+# Batch size
+BATCH_SIZE = 64
 
 # Binarizer (To get one hot encoded labels)
 LABEL_BINARIZER = sklearn.preprocessing.LabelBinarizer()
@@ -43,9 +45,6 @@ def format_dataset(dataset):
     # Extract data
     tweets = dataset['Tweet']
     subjects = dataset['Target']
-    labels = []
-    for row in dataset['Opinion Towards']:
-        labels.append(int(row[0]))
 
     # Convert words to numbers
     tweets = hash_words(tweets)
@@ -54,21 +53,30 @@ def format_dataset(dataset):
     # Pad dataset to have the same size
     np_tweets = sequence.pad_sequences(tweets, maxlen=MAX_SENTENCE_LENGTH)
 
+    return tweets, subjects, np_tweets
+
+def format_labels(dataset):
+    labels = []
+    for row in dataset['Opinion Towards']:
+        labels.append(int(row[0]))
+    print(labels)
+
     # One hot labels
     labels = LABEL_BINARIZER.transform(labels)
 
-    return tweets, subjects, labels, np_tweets
+    return labels
 
 def train(dataset_train, dataset_test):
     # Get Train tweets, subjects and labels
-    train_tweets, train_subjects, train_labels, np_train_tweets = format_dataset(dataset_train)
+    train_tweets, train_subjects, np_train_tweets = format_dataset(dataset_train)
+    train_labels = format_labels(dataset_train)
 
     # Get Test tweets, subjects and labels
-    test_tweets, test_subjects, test_labels, np_test_tweets = format_dataset(dataset_test)
+    test_tweets, test_subjects, np_test_tweets = format_dataset(dataset_test)
+    test_labels = format_labels(dataset_test)
 
     # Train
     embedding_vector_length = 32
-    batch_size = 64
     keras_model = create_model(VOCAB_SIZE, embedding_vector_length)
     keras_model.compile(
         loss='binary_crossentropy',
@@ -76,7 +84,7 @@ def train(dataset_train, dataset_test):
         metrics=['accuracy']
     )
 
-    history = keras_model.fit(np_train_tweets, train_labels, batch_size=batch_size, epochs=10)
+    history = keras_model.fit(np_train_tweets, train_labels, batch_size=BATCH_SIZE, epochs=10)
 
     # Test
     score = keras_model.evaluate(np_test_tweets, test_labels)
@@ -86,13 +94,18 @@ def train(dataset_train, dataset_test):
     return keras_model
 
 def predict(model, dataset):
-    pass
+    tweets, subjects, np_tweets = format_dataset(dataset)
+    prediction = model.predict(np_tweets, batch_size=BATCH_SIZE)
+    prediction = np.argmax(prediction, axis=1)
+
+    return prediction
 
 def main():
     dataset_train = dp.format(dp.load('./dataset/train.csv', ','))
     dataset_test = dp.format(dp.load('./dataset/test.csv', ','))
 
-    train(dataset_train, dataset_test)
+    model = train(dataset_train, dataset_test)
+    predict(model, dataset_test)
     return 0
 
 
