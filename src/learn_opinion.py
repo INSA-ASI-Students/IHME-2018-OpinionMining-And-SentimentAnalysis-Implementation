@@ -3,7 +3,7 @@
 import sklearn.preprocessing
 
 from keras.models import Sequential
-from keras.layers import Dense, LSTM, SimpleRNN, Dropout, Embedding, Conv1D, MaxPooling1D
+from keras.layers import Dense, LSTM, GRU, Dropout, Embedding, Conv1D, MaxPooling1D
 from keras.preprocessing import sequence
 from keras.preprocessing.text import hashing_trick
 
@@ -26,24 +26,11 @@ def create_model(vocab_size, embed_output_dim):
     keras_model.add(Embedding(vocab_size, embed_output_dim))
     keras_model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
     keras_model.add(MaxPooling1D(pool_size=2))
-    keras_model.add(SimpleRNN(100, recurrent_dropout=0.2))
+    keras_model.add(GRU(100, recurrent_dropout=0.2))
     keras_model.add(Dropout(0.2))
     keras_model.add(Dense(3, activation='sigmoid'))
 
     return keras_model
-
-
-def shape_data(dataset, subjects):
-    """
-    Transform a 2D numpy array of dimension N, M
-    to a 3D numpy of dimension N, W, F
-
-    N : Number of elements
-    W : Sequence length
-    F : Number of feature in a sequence
-    """
-    pass
-
 
 def main():
     dataset_train = dp.format(dp.load('./dataset/train.csv', ','))
@@ -98,13 +85,15 @@ def main():
     test_labels = label_binarizer.transform(test_labels)
 
     embedding_vector_length = 32
+    batch_size = 64
     keras_model = create_model(VOCAB_SIZE, embedding_vector_length)
     keras_model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
         metrics=['accuracy']
     )
-    history = keras_model.fit(np_train_tweets, train_labels, batch_size=64, epochs=10)
+
+    history = keras_model.fit(np_train_tweets, train_labels, batch_size=batch_size, epochs=10)
 
     score = keras_model.evaluate(np_test_tweets, test_labels)
     print('Test score:', score[0])
@@ -190,3 +179,19 @@ if __name__ == '__main__':
 # Le résultat obtenu est beaucoup plus intéressant, 
 # le modèle semble ne plus surapprendre et apprend 
 # mieux les données d'apprentissage.
+
+# 6ème modèle :
+#
+# loss : binary_crossentropy ; optimizer : adam
+#
+# Essai avec GRU (Gated Recurrent Unit)
+# Input
+# Convolution 
+# MaxPooling
+# GRU (100, recurrent_dropout=0.2)
+# Dropout (0.2)
+# Dense (3)
+# Activation('sigmoid')
+#
+# Résultat : Loss : 0.03 ; Test accuracy : 72.75%
+# Pas de surapprentissage non plus
