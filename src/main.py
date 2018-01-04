@@ -6,6 +6,7 @@ from utils import dataset_manager as dm
 
 from sentiment_detection import sentiwordnet as sw
 from sentiment_detection import wordnetaffect as wa
+import learn_opinion as lo
 
 DELIMITER = ','
 
@@ -15,21 +16,21 @@ def main():
     dataset = dm.format(dm.load(filename, DELIMITER))
 
     sentiment_prediction = predict_sentiment(sentiment, dataset)
-    if sentiment_prediction == None:
+    if sentiment_prediction is None:
         print('Invalid sentiment method')
         return 1
     else:
         print_results('Sentiment', sentiment, dataset, sentiment_prediction)
 
     opinion_prediction = predict_opinion(opinion, dataset)
-    if opinion_prediction == None:
+    if opinion_prediction is None:
         print('Invalid opinion method')
         return 1
     else:
         print_results('Opinion Towards', opinion, dataset, opinion_prediction)
 
     stance_prediction = predict_stance(stance, dataset)
-    if stance_prediction == None:
+    if stance_prediction is None:
         print('Invalid stance method')
         return 1
     else:
@@ -48,6 +49,11 @@ def predict_sentiment(sentiment, dataset):
 
 
 def predict_opinion(opinion, dataset):
+    if opinion == 'default':
+        dataset_train = dm.format(dm.load('./dataset/train.csv', ','))
+        dataset_test = dm.format(dm.load('./dataset/test.csv', ','))
+        model = lo.train(dataset_train, dataset_test)
+        return lo.predict(model, dataset)
     return None
 
 
