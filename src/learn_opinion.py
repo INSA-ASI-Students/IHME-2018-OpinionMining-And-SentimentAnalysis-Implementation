@@ -3,7 +3,7 @@
 import sklearn.preprocessing
 
 from keras.models import Sequential
-from keras.layers import Dense, LSTM, GRU, Dropout, Embedding, Conv1D, MaxPooling1D
+from keras.layers import Dense, SimpleRNN, Dropout, Embedding, Conv1D, MaxPooling1D
 from keras.preprocessing import sequence
 from keras.preprocessing.text import hashing_trick
 
@@ -11,8 +11,15 @@ import numpy as np
 
 from utils import dataset_manager as dp
 
+# Setting max length to 140 because a tweet can contains only 140 characters
+# so we assume that we cannot have more than 140 words.
+MAX_SENTENCE_LENGTH = 140
+# Setting the max number of existing words
 VOCAB_SIZE = 2**20
 
+# Binarizer (To get one hot encoded labels)
+LABEL_BINARIZER = sklearn.preprocessing.LabelBinarizer()
+LABEL_BINARIZER.fit(range(3))
 
 def hash_words(dataset, hash_size=VOCAB_SIZE):
     hashed_dataset = []
@@ -26,64 +33,40 @@ def create_model(vocab_size, embed_output_dim):
     keras_model.add(Embedding(vocab_size, embed_output_dim))
     keras_model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
     keras_model.add(MaxPooling1D(pool_size=2))
-    keras_model.add(GRU(100, recurrent_dropout=0.2))
+    keras_model.add(SimpleRNN(100, recurrent_dropout=0.2))
     keras_model.add(Dropout(0.2))
     keras_model.add(Dense(3, activation='sigmoid'))
 
     return keras_model
 
-def main():
-    dataset_train = dp.format(dp.load('./dataset/train.csv', ','))
-    dataset_test = dp.format(dp.load('./dataset/test.csv', ','))
+def format_dataset(dataset):
+    # Extract data
+    tweets = dataset['Tweet']
+    subjects = dataset['Target']
+    labels = []
+    for row in dataset['Opinion Towards']:
+        labels.append(int(row[0]))
 
-    # Get Train tweets and labels
-    num_tweets = 0
-    train_tweets = dataset_train['Tweet']
-    train_subjects = dataset_train['Target']
-    train_labels = []
-    for row in dataset_train['Opinion Towards']:
-        num_tweets += 1
-        train_labels.append(int(row[0]))
+    # Convert words to numbers
+    tweets = hash_words(tweets)
+    subjects = hash_words(subjects)
 
-    # Convert Train words to numbers
-    train_tweets = hash_words(train_tweets)
-    train_subjects = hash_words(train_subjects)
+    # Pad dataset to have the same size
+    np_tweets = sequence.pad_sequences(tweets, maxlen=MAX_SENTENCE_LENGTH)
 
-    # Setting max length to 140 because a tweet can contains only 140 characters
-    # so we assume that we cannot have more than 140 words.
-    max_length = 140
+    # One hot labels
+    labels = LABEL_BINARIZER.transform(labels)
 
-    # Pad sequence
-    # np_train_tweets = np.zeros((num_tweets, max_length), dtype=np.int32)
-    # for i in range(num_tweets):
-    #     np_train_tweets[i, :len(train_tweets[i])] = np.array(train_tweets[i])
-    np_train_tweets = sequence.pad_sequences(train_tweets, maxlen=max_length)
+    return tweets, subjects, labels, np_tweets
 
-    # # Get Test tweets and labels
-    num_tweets = 0
-    test_tweets = dataset_test['Tweet']
-    test_subjects = dataset_test['Target']
-    test_labels = []
-    for row in dataset_test['Opinion Towards']:
-        num_tweets += 1
-        test_labels.append(int(row[0]))
+def train(dataset_train, dataset_test):
+    # Get Train tweets, subjects and labels
+    train_tweets, train_subjects, train_labels, np_train_tweets = format_dataset(dataset_train)
 
-    # Convert Test words to numbers
-    test_tweets = hash_words(test_tweets)
-    test_subjects = hash_words(test_subjects)
+    # Get Test tweets, subjects and labels
+    test_tweets, test_subjects, test_labels, np_test_tweets = format_dataset(dataset_test)
 
-    # Pad sequence
-    # np_test_tweets = np.zeros((num_tweets, max_length), dtype=np.int32)
-    # for i in range(num_tweets):
-    #     np_test_tweets[i, :len(test_tweets[i])] = np.array(test_tweets[i])
-    np_test_tweets = sequence.pad_sequences(test_tweets, maxlen=max_length)
-
-    # # One hot labels
-    label_binarizer = sklearn.preprocessing.LabelBinarizer()
-    label_binarizer.fit(range(3))
-    train_labels = label_binarizer.transform(train_labels)
-    test_labels = label_binarizer.transform(test_labels)
-
+    # Train
     embedding_vector_length = 32
     batch_size = 64
     keras_model = create_model(VOCAB_SIZE, embedding_vector_length)
@@ -95,9 +78,21 @@ def main():
 
     history = keras_model.fit(np_train_tweets, train_labels, batch_size=batch_size, epochs=10)
 
+    # Test
     score = keras_model.evaluate(np_test_tweets, test_labels)
     print('Test score:', score[0])
     print('Test accuracy:', score[1] * 100, '%')
+
+    return keras_model
+
+def predict(model, dataset):
+    pass
+
+def main():
+    dataset_train = dp.format(dp.load('./dataset/train.csv', ','))
+    dataset_test = dp.format(dp.load('./dataset/test.csv', ','))
+
+    train(dataset_train, dataset_test)
     return 0
 
 
