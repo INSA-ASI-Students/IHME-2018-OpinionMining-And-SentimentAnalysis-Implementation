@@ -158,10 +158,10 @@ def predict(train_tweet,train_sentiment,test_tweet,test_sentiment):
     train_set = negative_features_train + positive_features_train + neutral_features_train
     test_set = negative_features_test + positive_features_test + neutral_features_test
 
-    accuracy = svc(train_set,test_set)
+    accuracy = multinomialNB(train_set,test_set)
     print('Good rate in percent: %s  ' % (accuracy))
 
-    pipe = make_pipeline(TfidfVectorizer(), SVC())
+    pipe = make_pipeline(TfidfVectorizer(), MultinomialNB())
     pipe.fit(train_tweet, train_sentiment)
     y_pred = pipe.predict(test_tweet)
 
