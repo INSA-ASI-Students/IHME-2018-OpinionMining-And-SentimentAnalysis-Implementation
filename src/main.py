@@ -7,6 +7,7 @@ from utils import dataset_manager as dm
 from sentiment_detection import sentiwordnet as sw
 from sentiment_detection import wordnetaffect as wa
 from sentiment_detection import apprentissage as ap
+from stance_detection import stance_detection as sd
 from learn_opinion import neural_network as nn
 
 DELIMITER = ','
@@ -17,7 +18,6 @@ def main():
     dataset = dm.format(dm.load(filename, DELIMITER))
 
     sentiment_prediction = predict_sentiment(sentiment, dataset)
-
     if sentiment_prediction is None:
         print('Invalid sentiment method')
         return 1
@@ -32,14 +32,15 @@ def main():
     else:
         print_results('Opinion Towards', opinion, dataset, opinion_prediction)
 
-    stance_prediction = predict_stance(stance, dataset)
+
+    stance_prediction = predict_stance(stance, dataset, sentiment_prediction, opinion_prediction)
     if stance_prediction is None:
         print('Invalid stance method')
         return 1
     else:
         print_results('Stance', stance, dataset, stance_prediction)
 
-     dm.save(output, dataset, DELIMITER)
+    dm.save(output, dataset, DELIMITER)
     return 0
 
 
@@ -64,7 +65,12 @@ def predict_opinion(opinion, dataset):
     return None
 
 
-def predict_stance(stance, dataset):
+def predict_stance(stance, dataset, sentiment_prediction, opinion_prediction):
+    if stance == 'stance':
+        dataset_train = dm.format(dm.load('./dataset/train.csv', DELIMITER))
+        dataset_test = dm.format(dm.load('./dataset/test.csv', DELIMITER))
+        model, lb_target, lb_opinion, lb_sentiment, lb_stance = sd.get_model(dataset_train, dataset_test)
+        return sd.predict_stance(dataset, model, opinion_prediction, sentiment_prediction, lb_target, lb_opinion, lb_sentiment, lb_stance)
     return None
 
 
@@ -81,7 +87,7 @@ def define_parameters(args):
     filename = './dataset/train.csv'
     sentiment = 'apprentissage'
     opinion = 'neural_network'
-    stance = 'default'
+    stance = 'stance'
     output = './output.csv'
 
     for arg in args:
