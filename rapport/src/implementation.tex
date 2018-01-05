@@ -27,3 +27,53 @@ Certains formatage appliqués ne sont pas forcément des plus précis, et pourra
 \subsection{"Opinion towards" detection}
 
 \subsection{Stance detection}
+
+La partie "Stance detection" consiste à déterminer l'opinion du tweet par rapport au sujet, c'est-à-dire si le tweet est "pour", "contre" ou "neutre" vis à vis du sujet. Cette étape prend en entrée le "Target" (le sujet), le "Sentiment" (positif, négatif ou autre) et l'"Opinion Towards" (le tweet donne un opinion par rapport au sujet, le tweet donne un opinion qui n'a pas de rapport avec le sujet, ou le tweet ne donne pas d'opinion). Ces deux derniers sont déterminés dans les étapes précédentes. Cette dernière étape est donc sensible aux taux d'erreur précédemment obtenus.
+La combinaison de ces trois entrées permet de déterminer la "stance". \\
+
+Cette partie est un problème de classification basique, qui prend en entrée trois paramètres qui renvoie une sortie. C'est un problème de classification multi-classe, en effet la sortie se compose de 3 classes : "FAVOR", "AGAINST" et "NONE". \\
+
+\subsubsection{POC - Traitement des données}
+
+Une première approche a été de tester différentes méthodes de classification usuelles comme SVM et bayes.
+
+Pour cela, un petit traitement sur les données s'impose, effectivement pour utiliser de telles méthodes il est d'abord nécessaire de labelliser les données avec des classes numérotées pour s'abstraire des chaînes de caractères. \\
+Dans le jeu de données de train fourni, il y 5 "target" différents, en ce qui concerne le "sentiment" il y a 3 classes possibles et il en est de même pour l'"opinion towards".
+
+En essayant de réaliser une SVM, nous nous sommes rendu compte que dans le jeu de données de test il y avait maintenant 6 "target". En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté. Or, le modèle ne peut pas fonctionner pour un sujet qui n'a pas été appris. 
+La solution a dont été de fusionner les ensembles d'apprentissage et de test et de les redécouper de manière aléatoire afin d'obtenir des tweets de l'ensemble des "target" dans l'ensemble d'apprentissage.
+
+\subsubsection{POC - Test de méthodes de classification}
+
+Tout d'abord, nous avions décidé d'implémenter une méthode de classification bayésienne et une méthode SVM, ensuite il a également été possible d'implémenter d'autres méthodes classification.
+
+Pour un premier test, toutes les méthodes ont été testées avec les paramètres par défaut, et renvoient les taux d'erreurs suivants :
+\begin{itemize}
+\item Bayes avec un noyau Gaussien : 31,74$\%$
+\item SVM Linéaire : 37,62$\%$
+\item SVM : 33,11$\%$
+\item K plus proches voisins : 34,47$\%$
+%\item Arbre de décision : 24,49$\%$
+\end{itemize}
+
+Les résultats de ce POC sont disponibles dans la section \hyperref[annexe-stance-detection]{Annexe : POC - Find Stance} p.2-3.
+
+\subsubsection{POC - Test de paramètres de la méthode SVM}
+
+Ensuite, il s'est avéré intéressant de tester différents paramètres de la méthode SVM. Le résultat est présent sur la figure suivante.
+
+\begin{figure}[!h]
+\centering
+\includegraphics{src/annexes/POC_FindStance_V2/output_24_0.png}
+\end{figure}
+
+\textbf{Les valeurs C=100 et gamma=0.1 ont donc été choisi pour réaliser cette SVM, qui fournit finalement un taux d'erreur de $24,49\%$}.
+
+\subsubsection{Implémentation d'une SVM}
+
+%TODO
+
+
+
+
+

@@ -18,6 +18,8 @@
 \usepackage{array}
 \usepackage{svg}
 
+\usepackage{pdfpages}
+
 %%%%%%%%%%%%%%%%%%%% Presentation %%%%%%%%%%%%%%%%%%%
 \title{\huge Interactions Homme-Machine Évoluées\\Rapport\\Sujet : Stance detection sur tweeter}
 \author{Ingrid FIQUET\\Morgane LEGROS\\Florian MARTIN\\Thibault THÉOLOGIEN}
@@ -55,6 +57,7 @@
 \part{Introduction}
 	\input{src/introduction.tex}
 
+% Expliquer notre idée et les différentes étapes
 
 \newpage
 \part{Conception}
@@ -70,11 +73,19 @@
 \newpage
 \part{Implémentation}
 	\input{src/implementation.tex}
+	
+\newpage
+\part{Résultats}
+	\input{src/resultats.tex}
 
 
 \newpage
 \part{Conclusion}
 	\input{src/conclusion.tex}
 
-
+\newpage
+\part{Conclusion}
+	\subsection{Annexe : POC - Find Stance}
+	\label{annexe-stance-detection}	%\input{src/annexes/POC_FindStance_V2/POC_FindStance_V2.tex}
+	\includepdf[pages={1,2,3,4,5}]{src/annexes/POC_FindStance_V2/POC_FindStance_V2.pdf}
 \end{document}
