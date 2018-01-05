@@ -6,7 +6,7 @@ from utils import dataset_manager as dm
 
 from sentiment_detection import sentiwordnet as sw
 from sentiment_detection import wordnetaffect as wa
-import learn_opinion as lo
+from learn_opinion import neural_network as nn
 
 DELIMITER = ','
 
@@ -49,11 +49,11 @@ def predict_sentiment(sentiment, dataset):
 
 
 def predict_opinion(opinion, dataset):
-    if opinion == 'default':
+    if opinion == 'neural_network':
         dataset_train = dm.format(dm.load('./dataset/train.csv', ','))
         dataset_test = dm.format(dm.load('./dataset/test.csv', ','))
-        model = lo.train(dataset_train, dataset_test)
-        return lo.predict(model, dataset)
+        model = nn.train(dataset_train, dataset_test)
+        return nn.predict(model, dataset)
     return None
 
 
@@ -73,7 +73,7 @@ def print_results(column, method, dataset, prediction):
 def define_parameters(args):
     filename = './dataset/train.csv'
     sentiment = 'wordnetaffect'
-    opinion = 'default'
+    opinion = 'neural_network'
     stance = 'default'
     output = './output.csv'
 
