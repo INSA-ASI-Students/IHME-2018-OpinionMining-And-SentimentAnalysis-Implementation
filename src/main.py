@@ -6,6 +6,7 @@ from utils import dataset_manager as dm
 
 from sentiment_detection import sentiwordnet as sw
 from sentiment_detection import wordnetaffect as wa
+from sentiment_detection import apprentissage as ap
 from learn_opinion import neural_network as nn
 
 DELIMITER = ','
@@ -16,11 +17,13 @@ def main():
     dataset = dm.format(dm.load(filename, DELIMITER))
 
     sentiment_prediction = predict_sentiment(sentiment, dataset)
+
     if sentiment_prediction is None:
         print('Invalid sentiment method')
         return 1
     else:
         print_results('Sentiment', sentiment, dataset, sentiment_prediction)
+
 
     opinion_prediction = predict_opinion(opinion, dataset)
     if opinion_prediction is None:
@@ -36,7 +39,7 @@ def main():
     else:
         print_results('Stance', stance, dataset, stance_prediction)
 
-    # dm.save(output, dataset, DELIMITER)
+     dm.save(output, dataset, DELIMITER)
     return 0
 
 
@@ -45,6 +48,10 @@ def predict_sentiment(sentiment, dataset):
         return wa.predict(dataset['Tweet'])
     elif sentiment == 'sentiwordnet':
         return sw.predict(dataset['Tweet'])
+    elif sentiment == 'apprentissage':
+        dataset_train = dm.format(dm.load('./dataset/train.csv', ','))
+        dataset_test = dm.format(dm.load('./dataset/test.csv', ','))
+        return ap.predict(dataset_train['Tweet'],dataset_train['Sentiment'],dataset_test['Tweet'],dataset_test['Sentiment'])
     return None
 
 
@@ -72,7 +79,7 @@ def print_results(column, method, dataset, prediction):
 
 def define_parameters(args):
     filename = './dataset/train.csv'
-    sentiment = 'wordnetaffect'
+    sentiment = 'apprentissage'
     opinion = 'neural_network'
     stance = 'default'
     output = './output.csv'

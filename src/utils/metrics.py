@@ -6,4 +6,4 @@ def success_rate(truth, prediction):
         if prediction[i] != truth[i]:
             nb_errors = nb_errors + 1
 
-    return 1 - (dim - nb_errors) / dim
+    return (dim - nb_errors) / dim

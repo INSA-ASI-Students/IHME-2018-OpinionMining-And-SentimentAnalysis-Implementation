@@ -88,7 +88,7 @@ def main():
     tagged = part_of_speech_tagging(dataset['Tweet'])
     prediction = get_sentiment(tagged)
     success_rate = metrics.success_rate(dataset['Sentiment'], prediction)
-    print("Taux d'erreur : %s  " % (success_rate))
+    #print("Taux d'erreur : %s  " % (success_rate))
 
     return 0
 
