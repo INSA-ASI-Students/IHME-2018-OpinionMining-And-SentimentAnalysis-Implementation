@@ -142,7 +142,7 @@ def linearSVC(train_set,test_set):
     return accuracy
 
 
-def predict(train_tweet,train_sentiment,test_tweet,test_sentiment):
+def predict(dataset, train_tweet, train_sentiment, test_tweet, test_sentiment):
 
     (X_train_posTweet, X_train_negTweet, X_train_otherTweet, X_test_posTweet, X_test_negTweet, X_test_otherTweet) = getPosNegOtherTweet(train_tweet,train_sentiment,test_tweet,test_sentiment)
     (X_train_wordPos,X_train_wordNeg,X_train_wordOther,X_test_wordPos,X_test_wordNeg,X_test_wordOther) = getPosNegOtherWords(X_train_posTweet, X_train_negTweet, X_train_otherTweet, X_test_posTweet, X_test_negTweet, X_test_otherTweet)
@@ -163,12 +163,12 @@ def predict(train_tweet,train_sentiment,test_tweet,test_sentiment):
 
     pipe = make_pipeline(TfidfVectorizer(), MultinomialNB())
     pipe.fit(train_tweet, train_sentiment)
-    y_pred = pipe.predict(test_tweet)
+    y_pred = pipe.predict(dataset['Tweet'])
 
     #success_rate = metrics.success_rate(test_sentiment, y_pred)
     #print('multinomialNB results good prediction: %s  ' % (success_rate))
 
-    return y_pred
+    return y_pred.tolist()
 
 
 def main():

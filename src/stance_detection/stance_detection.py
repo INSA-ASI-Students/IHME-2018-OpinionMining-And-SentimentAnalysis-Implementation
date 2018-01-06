@@ -41,7 +41,7 @@ def get_model(dataset_train, dataset_test):
     return model, lb_target, lb_opinion, lb_sentiment, lb_stance
 
 def predict_stance(dataset, model, opinion_prediction, sentiment_prediction, lb_target, lb_opinion, lb_sentiment, lb_stance):
-    data = np.array([encode_data(lb_target, dataset['Target']), encode_data(lb_opinion, opinion_prediction), encode_data(lb_sentiment, sentiment_prediction)])
+    data = np.array([encode_data(lb_target, dataset['Target']), encode_data(lb_opinion, dataset['Opinion Towards']), encode_data(lb_sentiment, sentiment_prediction)])
     data = np.transpose(data)
     prediction = model.predict(data)
     return lb_stance.inverse_transform(prediction)
