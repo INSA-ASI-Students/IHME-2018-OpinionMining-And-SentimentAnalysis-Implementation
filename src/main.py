@@ -52,7 +52,7 @@ def predict_sentiment(sentiment, dataset):
     elif sentiment == 'apprentissage':
         dataset_train = dm.format(dm.load('./dataset/train.csv', ','))
         dataset_test = dm.format(dm.load('./dataset/test.csv', ','))
-        return ap.predict(dataset_train['Tweet'],dataset_train['Sentiment'],dataset_test['Tweet'],dataset_test['Sentiment'])
+        return ap.predict(dataset, dataset_train['Tweet'],dataset_train['Sentiment'],dataset_test['Tweet'],dataset_test['Sentiment'])
     return None
 
 
@@ -84,7 +84,7 @@ def print_results(column, method, dataset, prediction):
 
 
 def define_parameters(args):
-    filename = './dataset/train.csv'
+    filename = './dataset/test.csv'
     sentiment = 'apprentissage'
     opinion = 'neural_network'
     stance = 'stance'
