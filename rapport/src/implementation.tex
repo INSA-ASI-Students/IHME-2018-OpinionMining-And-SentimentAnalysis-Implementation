@@ -1,4 +1,10 @@
-\subsection{Formatage des données}
+\section{Chargement des données}
+
+Lors de l'étude des données, ne nous sommes rendu compte que le jeu de données d'apprentissage et de test ne comportent pas le même nombre de ". En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté dans le jeu de test.
+
+N'étant pas dans les conditions réelles de la compétition, nous avons décidé de fusionner l'ensemble des datasets afin de les redécouper de manière aléatoire en trois ensembles, l'un d'apprentissage, l'un de test pour tester les différents modèles, et l'un de "validation" \textbf{utilisé une seule fois} dans notre projet pour la prédiction.
+
+\section{Formatage des données}
 \par Afin d'améliorer les performances des différents blocs de cette implémentation, nous avons choisi de formater au mieux les données. Uniquement les tweets sont concernés pas ce formatage.
 
 \par Plusieurs méthodes ont été appliquées:
@@ -22,18 +28,18 @@
 \end{itemize}
 Certains formatage appliqués ne sont pas forcément des plus précis, et pourraient être améliorés. Par exemple, dans le cas du remplacement des contractions en mots, il est difficile de déterminer si "he's" correspond à "he is" ou "he has".
 
-\subsection{Sentiment analysis}
+\section{Sentiment analysis}
 
-\subsection{"Opinion towards" detection}
+\section{"Opinion towards" detection}
 
-\subsection{Stance detection}
+\section{Stance detection}
 
 La partie "Stance detection" consiste à déterminer l'opinion du tweet par rapport au sujet, c'est-à-dire si le tweet est "pour", "contre" ou "neutre" vis à vis du sujet. Cette étape prend en entrée le "Target" (le sujet), le "Sentiment" (positif, négatif ou autre) et l'"Opinion Towards" (le tweet donne un opinion par rapport au sujet, le tweet donne un opinion qui n'a pas de rapport avec le sujet, ou le tweet ne donne pas d'opinion). Ces deux derniers sont déterminés dans les étapes précédentes. Cette dernière étape est donc sensible aux taux d'erreur précédemment obtenus.
 La combinaison de ces trois entrées permet de déterminer la "stance". \\
 
 Cette partie est un problème de classification basique, qui prend en entrée trois paramètres qui renvoie une sortie. C'est un problème de classification multi-classe, en effet la sortie se compose de 3 classes : "FAVOR", "AGAINST" et "NONE". \\
 
-\subsubsection{POC - Traitement des données}
+\subsection{POC - Traitement des données}
 
 Une première approche a été de tester différentes méthodes de classification usuelles comme SVM et bayes.
 
@@ -43,7 +49,7 @@ Dans le jeu de données de train fourni, il y 5 "target" différents, en ce qui 
 En essayant de réaliser une SVM, nous nous sommes rendu compte que dans le jeu de données de test il y avait maintenant 6 "target". En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté. Or, le modèle ne peut pas fonctionner pour un sujet qui n'a pas été appris. 
 La solution a dont été de fusionner les ensembles d'apprentissage et de test et de les redécouper de manière aléatoire afin d'obtenir des tweets de l'ensemble des "target" dans l'ensemble d'apprentissage.
 
-\subsubsection{POC - Test de méthodes de classification}
+\subsection{POC - Test de méthodes de classification}
 
 Tout d'abord, nous avions décidé d'implémenter une méthode de classification bayésienne et une méthode SVM, ensuite il a également été possible d'implémenter d'autres méthodes classification.
 
@@ -58,7 +64,7 @@ Pour un premier test, toutes les méthodes ont été testées avec les paramètr
 
 Les résultats de ce POC sont disponibles dans la section \hyperref[annexe-stance-detection]{Annexe : POC - Find Stance} p.2-3.
 
-\subsubsection{POC - Test de paramètres de la méthode SVM}
+\subsection{POC - Test de paramètres de la méthode SVM}
 
 Ensuite, il s'est avéré intéressant de tester différents paramètres de la méthode SVM. Le résultat est présent sur la figure suivante.
 
@@ -69,10 +75,7 @@ Ensuite, il s'est avéré intéressant de tester différents paramètres de la m
 
 \textbf{Les valeurs C=100 et gamma=0.1 ont donc été choisi pour réaliser cette SVM, qui fournit finalement un taux d'erreur de $24,49\%$}.
 
-\subsubsection{Implémentation d'une SVM}
-
-%TODO
-
+C'est donc cette méthode qui a été implémentée
 
 
 
