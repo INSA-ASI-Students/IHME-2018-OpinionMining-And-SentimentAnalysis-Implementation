@@ -7,26 +7,24 @@ from sklearn.preprocessing import LabelEncoder
 def encode_data(lb, data):
     return lb.fit_transform(data)
 
-def fusion_data(dataset_train, dataset_test, label):
-    return np.hstack([np.array(dataset_train[label]), np.array(dataset_test[label])])
 
 def prepare_data(dataset_train, dataset_test, lb_target, lb_opinion, lb_sentiment, lb_stance):
-    # Data fusion
-    target = fusion_data(dataset_train, dataset_test, 'Target')
-    opinion = fusion_data(dataset_train, dataset_test, 'Opinion Towards')
-    sentiment = fusion_data(dataset_train, dataset_test, 'Sentiment')
-    stance = fusion_data(dataset_train, dataset_test, 'Stance')
-
     # Encode classes
-    target_label = encode_data(lb_target, target)
-    opinion_label = encode_data(lb_opinion, opinion)
-    sentiment_label = encode_data(lb_sentiment, sentiment)
-    stance_label = encode_data(lb_stance, stance)
+    target_train = encode_data(lb_target, dataset_train['Target'])
+    opinion_train = encode_data(lb_opinion, dataset_train['Opinion Towards'])
+    sentiment_train = encode_data(lb_sentiment, dataset_train['Sentiment'])
+    stance_train = encode_data(lb_stance, dataset_train['Stance'])
 
-    # Split data
-    X = np.array([target_label, opinion_label, sentiment_label])
-    X = np.transpose(X)
-    return train_test_split(X, stance_label, test_size=0.15, random_state=1)
+    target_test = encode_data(lb_target, dataset_test['Target'])
+    opinion_test = encode_data(lb_opinion, dataset_test['Opinion Towards'])
+    sentiment_test = encode_data(lb_sentiment, dataset_test['Sentiment'])
+    stance_test = encode_data(lb_stance, dataset_test['Stance'])
+
+    X_train = np.array([target_train, opinion_train, sentiment_train])
+    X_train = np.transpose(X_train)
+    X_test = np.array([target_test, opinion_test, sentiment_test])
+    X_test = np.transpose(X_test)
+    return X_train, X_test, stance_train, stance_test
 
 def get_model(dataset_train, dataset_test):
     [lb_target, lb_opinion, lb_sentiment, lb_stance] = [preprocessing.LabelEncoder(), preprocessing.LabelEncoder(), preprocessing.LabelEncoder(), preprocessing.LabelEncoder()]
