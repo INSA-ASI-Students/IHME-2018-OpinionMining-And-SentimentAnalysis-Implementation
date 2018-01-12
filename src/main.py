@@ -14,9 +14,11 @@ DELIMITER = ','
 
 
 def main():
-    (predict_filename, train_filename, test_filename, sentiment, opinion, stance, output) = define_parameters(sys.argv)
+    (predict_filename, train_filename, test_filename, sentiment,
+     opinion, stance, output) = define_parameters(sys.argv)
 
-    dataset_train, dataset_test, dataset_valid = dm.fusion(train_filename, test_filename, predict_filename)
+    dataset_train, dataset_test, dataset_valid = dm.fusion(
+        train_filename, test_filename, predict_filename)
 
     sentiment_prediction = predict_sentiment(sentiment, dataset_train, dataset_test, dataset_valid)
     if sentiment_prediction is None:
@@ -25,7 +27,6 @@ def main():
     else:
         print_results('Sentiment', sentiment, dataset_valid, sentiment_prediction)
 
-
     opinion_prediction = predict_opinion(opinion, dataset_train, dataset_test, dataset_valid)
     if opinion_prediction is None:
         print('Invalid opinion method')
@@ -33,8 +34,8 @@ def main():
     else:
         print_results('Opinion Towards', opinion, dataset_valid, opinion_prediction)
 
-
-    stance_prediction = predict_stance(stance, dataset_train, dataset_test, dataset_valid, sentiment_prediction, opinion_prediction)
+    stance_prediction = predict_stance(
+        stance, dataset_train, dataset_test, dataset_valid, sentiment_prediction, opinion_prediction)
     if stance_prediction is None:
         print('Invalid stance method')
         return 1
@@ -50,8 +51,8 @@ def predict_sentiment(sentiment, dataset_train, dataset_test, dataset):
         return wa.predict(dataset['Tweet'])
     elif sentiment == 'sentiwordnet':
         return sw.predict(dataset['Tweet'])
-elif sentiment == 'learning':
-        return ap.predict(dataset, dataset_train['Tweet'],dataset_train['Sentiment'],dataset_test['Tweet'],dataset_test['Sentiment'])
+    elif sentiment == 'learning':
+        return ap.predict(dataset, dataset_train['Tweet'], dataset_train['Sentiment'], dataset_test['Tweet'], dataset_test['Sentiment'])
     return None
 
 
@@ -64,7 +65,8 @@ def predict_opinion(opinion, dataset_train, dataset_test, dataset):
 
 def predict_stance(stance, dataset_train, dataset_test, dataset, sentiment_prediction, opinion_prediction):
     if stance == 'stance':
-        model, lb_target, lb_opinion, lb_sentiment, lb_stance = sd.get_model(dataset_train, dataset_test)
+        model, lb_target, lb_opinion, lb_sentiment, lb_stance = sd.get_model(
+            dataset_train, dataset_test)
         return sd.predict_stance(dataset, model, opinion_prediction, sentiment_prediction, lb_target, lb_opinion, lb_sentiment, lb_stance)
     return None
 
@@ -73,7 +75,7 @@ def print_results(column, method, dataset, prediction):
     try:
         truth = dataset[column]
         success_rate = metrics.success_rate(truth, prediction)
-        print('%s results: %s  percent' % (method, success_rate*100))
+        print('%s results: %s  percent' % (method, success_rate * 100))
     except:
         pass
 
