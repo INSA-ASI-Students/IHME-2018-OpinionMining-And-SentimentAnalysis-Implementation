@@ -7,6 +7,13 @@
 	\item 
 \end{itemize}
 
+\section{Chargement des données}
+
+Lors de l'étude des données, ne nous sommes rendu compte que le jeu de données d'apprentissage et de test ne comportent pas le même nombre de ". En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté dans le jeu de test.
+
+N'étant pas dans les conditions réelles de la compétition, nous avons décidé de fusionner l'ensemble des datasets afin de les redécouper de manière aléatoire en trois ensembles, l'un d'apprentissage, l'un de test pour tester les différents modèles, et l'un de "validation" \textbf{utilisé une seule fois} dans notre projet pour la prédiction.
+
+
 \section{Formatage des données}
 \par Afin d'améliorer les performances des différents blocs de cette implémentation, nous avons choisi de formater au mieux les données. Uniquement les tweets sont concernés pas ce formatage.
 
@@ -78,10 +85,8 @@ Ensuite, il s'est avéré intéressant de tester différents paramètres de la m
 
 \textbf{Les valeurs C=100 et gamma=0.1 ont donc été choisi pour réaliser cette SVM, qui fournit finalement un taux d'erreur de $24,49\%$}.
 
+C'est donc cette méthode qui a été implémentée
 \subsection{Implémentation d'une SVM}
-
-%TODO
-
 
 
 

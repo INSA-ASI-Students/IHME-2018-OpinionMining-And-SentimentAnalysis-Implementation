@@ -14,62 +14,59 @@ DELIMITER = ','
 
 
 def main():
-    (filename, sentiment, opinion, stance, output) = define_parameters(sys.argv)
-    dataset = dm.format(dm.load(filename, DELIMITER))
+    (predict_filename, train_filename, test_filename, sentiment,
+     opinion, stance, output) = define_parameters(sys.argv)
 
-    sentiment_prediction = predict_sentiment(sentiment, dataset)
+    dataset_train, dataset_test, dataset_valid = dm.fusion(
+        train_filename, test_filename, predict_filename)
+
+    sentiment_prediction = predict_sentiment(sentiment, dataset_train, dataset_test, dataset_valid)
     if sentiment_prediction is None:
         print('Invalid sentiment method')
         return 1
     else:
-        print_results('Sentiment', sentiment, dataset, sentiment_prediction)
+        print_results('Sentiment', sentiment, dataset_valid, sentiment_prediction)
 
-
-    opinion_prediction = predict_opinion(opinion, dataset)
+    opinion_prediction = predict_opinion(opinion, dataset_train, dataset_test, dataset_valid)
     if opinion_prediction is None:
         print('Invalid opinion method')
         return 1
     else:
-        print_results('Opinion Towards', opinion, dataset, opinion_prediction)
+        print_results('Opinion Towards', opinion, dataset_valid, opinion_prediction)
 
-
-    stance_prediction = predict_stance(stance, dataset, sentiment_prediction, opinion_prediction)
+    stance_prediction = predict_stance(
+        stance, dataset_train, dataset_test, dataset_valid, sentiment_prediction, opinion_prediction)
     if stance_prediction is None:
         print('Invalid stance method')
         return 1
     else:
-        print_results('Stance', stance, dataset, stance_prediction)
+        print_results('Stance', stance, dataset_valid, stance_prediction)
 
-    dm.save(output, dataset, DELIMITER)
+    dm.save(output, dataset_valid, DELIMITER)
     return 0
 
 
-def predict_sentiment(sentiment, dataset):
+def predict_sentiment(sentiment, dataset_train, dataset_test, dataset):
     if sentiment == 'wordnetaffect':
         return wa.predict(dataset['Tweet'])
     elif sentiment == 'sentiwordnet':
         return sw.predict(dataset['Tweet'])
-    elif sentiment == 'apprentissage':
-        dataset_train = dm.format(dm.load('./dataset/train.csv', ','))
-        dataset_test = dm.format(dm.load('./dataset/test.csv', ','))
-        return ap.predict(dataset, dataset_train['Tweet'],dataset_train['Sentiment'],dataset_test['Tweet'],dataset_test['Sentiment'])
+    elif sentiment == 'learning':
+        return ap.predict(dataset, dataset_train['Tweet'], dataset_train['Sentiment'], dataset_test['Tweet'], dataset_test['Sentiment'])
     return None
 
 
-def predict_opinion(opinion, dataset):
+def predict_opinion(opinion, dataset_train, dataset_test, dataset):
     if opinion == 'neural_network':
-        dataset_train = dm.format(dm.load('./dataset/train.csv', ','))
-        dataset_test = dm.format(dm.load('./dataset/test.csv', ','))
         model = nn.train(dataset_train, dataset_test)
         return nn.predict(model, dataset)
     return None
 
 
-def predict_stance(stance, dataset, sentiment_prediction, opinion_prediction):
+def predict_stance(stance, dataset_train, dataset_test, dataset, sentiment_prediction, opinion_prediction):
     if stance == 'stance':
-        dataset_train = dm.format(dm.load('./dataset/train.csv', DELIMITER))
-        dataset_test = dm.format(dm.load('./dataset/test.csv', DELIMITER))
-        model, lb_target, lb_opinion, lb_sentiment, lb_stance = sd.get_model(dataset_train, dataset_test)
+        model, lb_target, lb_opinion, lb_sentiment, lb_stance = sd.get_model(
+            dataset_train, dataset_test)
         return sd.predict_stance(dataset, model, opinion_prediction, sentiment_prediction, lb_target, lb_opinion, lb_sentiment, lb_stance)
     return None
 
@@ -78,14 +75,16 @@ def print_results(column, method, dataset, prediction):
     try:
         truth = dataset[column]
         success_rate = metrics.success_rate(truth, prediction)
-        print('%s results: %s  ' % (method, success_rate))
+        print('%s results: %s  percent' % (method, success_rate * 100))
     except:
         pass
 
 
 def define_parameters(args):
-    filename = './dataset/test.csv'
-    sentiment = 'apprentissage'
+    train_filename = './dataset/train.csv'
+    test_filename = './dataset/test.csv'
+    predict_filename = ''
+    sentiment = 'learning'
     opinion = 'neural_network'
     stance = 'stance'
     output = './output.csv'
@@ -101,7 +100,7 @@ def define_parameters(args):
             stance = arg.split('--stance=')[1]
         elif arg.startswith('--output='):
             output = arg.split('--output=')[1]
-    return filename, sentiment, opinion, stance, output
+    return predict_filename, train_filename, test_filename, sentiment, opinion, stance, output
 
 
 if __name__ == '__main__':
