@@ -40,6 +40,62 @@ Certains formatage appliqués ne sont pas forcément des plus précis, et pourra
 
 \section{Sentiment analysis}
 
+\par Concernant la partie détection de sentiment l'objectif est de déterminer si le tweet est "positif", "neutre" ou "négatif". 
+\par Pour déterminer la méthode la plus efficace nous avons réaliser une comparaison de plusieurs méthodes :
+
+\begin{itemize}
+	\item Étude du sentiment des Tweets à l'aide de la polarité positive, négative et neutre de chaque mot des Tweets via l'utilisation de Sentiwordnet.
+	\item Étude du sentiment des Tweets à l'aide de la polarité positive, négative et neutre de chaque mot des Tweets via l'utilisation de Sentiwordnet et de Wordnet.
+	\item Détermination du sentiment des Tweets à l'aide de classifier.
+\end{itemize}
+
+\subsection{Sentiwordnet}
+\par Sentiwordnet est un dictionnaire de mots de référence avec lequel on va travailler dans cette partie.
+\par Sentiwordnet permet d'obtenir des scores entre 0 et 1 informant de la forte positivité ou de la forte négativité d'un mot donné. \\
+
+
+\par \textbf{Principe :} \\
+\par Prendre une liste de tweets en entrée. Pour chacun des tweets on va sommer les scores de positivité ainsi que les scores de négativité de tous les mots du tweets. Pour obtenir le score de polarité final du tweet on va soustraire le score de négativité au score de positivité. \\
+
+\par \textbf{Étape de la méthode :} \\
+\begin{itemize}
+	\item Pré-traitement : Retrait des mots de liaison, déterminant, ponctuation, symbole qui n'ont pas d'impact dans la détermination de la polarité des mots.	 \\
+	\item Part Of Speech Tagging : Utilisation de la librairie nltk (Natural Language Toolkit) afin de tagger chaque mots des tweets par leur description grammatical tel que NN pour "nom" ou JJ pour "adjectif". Le but de faire ça dans cette méthode et de pouvoir filtrer les catégories de mots que l'on va donner en entrée de Sentiwordnet pour déterminer leur polarité dans le but d'avoir un meilleur résultat en étudiant les catégories les plus pertinentes. Nous avons donc choisi d'étudier les scores de positivité et de négativité des groupes NN (noms), JJ (adjectifs), VB (verbe), RB (adverbe). \\
+	\item Calcul du sentiments de tous les mots retenus dans un tweet pour obtenir la polarité moyenne du tweet. \\
+	\item Si le score final du tweet est positif alors la prédiction du tweet est 'positif', si le score est négatif on retourne 'négatif' et si le score vaut 0 on retourne 'neutre'. \\
+\end{itemize}
+
+\par \textbf{Résultats :} \\
+
+\begin{table}[h!]
+\centering
+\caption{Résultats Sentiwordnet}
+\label{my-label}
+\begin{tabular}{|l|l|}
+\hline
+                   & Taux de bonne prédiction \\ \hline
+Sans-prétraitement & 48,9\%                   \\ \hline
+Avec-prétraitement & 54,6\%                   \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Wordnet}
+
+\par L'objectif dans cette méthode est d'utiliser un autre dictionnaire pour étudier la polarité des mots des tweets car le dictionnaire Sentiwordnet possède un lexique restreint ne permettant pas de calculer la polarité de tous les mots donc beaucoup ne sont pas étudié. \\
+
+\par L'avantage avec Wordnet c'est que l'on va extraire les mots des tweets et pour tous les mots on va à l'aide de Wordnet récupérer le mot le plus général du mot en entrée. Par exemple grâce à sa reconnaissance de synonyme wordnet va transformer les mots "sorrowful" et "sad" par le mot "unhappy". Ainsi l'avantage ici c'est que l'on va appliquer la même méthode que précédemment avec Sentiwornet pour le calcul de polarité mais grâce à l'utilisation de Wordnet en amont le dictionnaire Sentiwornet pourra calculer le score de davantage de mots car les mots non présent dans ce dictionnaire auront été remplacé par des mots plus basiques bien présent dans Sentiwornet. \\ 
+
+\par Dans la méthode précédente on a pu constater que les pré-traitement étaient utiles donc nous les avons conserver dans cette méthode également. \\
+
+\par\textbf{ Résultats : } 53,19\%
+
+\subsection{Classifiers}
+
+
+
+
 \section{"Opinion towards" detection}
 
 \section{Stance detection}
