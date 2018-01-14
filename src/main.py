@@ -52,7 +52,8 @@ def predict_sentiment(sentiment, dataset_train, dataset_test, dataset):
     elif sentiment == 'sentiwordnet':
         return sw.predict(dataset['Tweet'])
     elif sentiment == 'learning':
-        return ap.predict(dataset, dataset_train['Tweet'], dataset_train['Sentiment'], dataset_test['Tweet'], dataset_test['Sentiment'])
+        model = ap.train(dataset_train,dataset_test);
+        return ap.predict(model,dataset['Tweet'])
     return None
 
 
