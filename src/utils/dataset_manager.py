@@ -8,6 +8,14 @@ import numpy as np
 DELIMITER = ','
 
 
+def load_model(type, method):
+    return None
+
+
+def save_model(model, type, method):
+    pass
+
+
 def load(filename, delimiter):
     dataset = []
     with open(filename, 'r', encoding='ISO 8859-2') as csvfile:
@@ -47,37 +55,32 @@ def save(filename, dataset, delimiter):
             writer.writerow(row)
 
 
-def data_to_dataset(data):
-    return {'Target': list(data[0]), 'Tweet': list(data[1]), 'Opinion Towards': list(data[2]), 'Sentiment': list(data[3]), 'Stance': list(data[4])}
+def _data_to_dataset(data):
+    return {
+        'Target': list(data[0]),
+        'Tweet': list(data[1]),
+        'Opinion Towards': list(data[2]),
+        'Sentiment': list(data[3]),
+        'Stance': list(data[4])
+    }
 
 
-def fusion(train_filename, test_filename, predict_filename):
-    dataset_train = format(load(train_filename, DELIMITER))
-    dataset_test = format(load(test_filename, DELIMITER))
-
-    target = np.hstack([np.array(dataset_train['Target']), np.array(dataset_test['Target'])])
-    tweet = np.hstack([np.array(dataset_train['Tweet']), np.array(dataset_test['Tweet'])])
-    opinion = np.hstack([np.array(dataset_train['Opinion Towards']),
-                         np.array(dataset_test['Opinion Towards'])])
-    sentiment = np.hstack([np.array(dataset_train['Sentiment']),
-                           np.array(dataset_test['Sentiment'])])
-    stance = np.hstack([np.array(dataset_train['Stance']), np.array(dataset_test['Stance'])])
+def fusion(dataset1, dataset2):
+    target = np.hstack([np.array(dataset1['Target']),
+                        np.array(dataset2['Target'])])
+    tweet = np.hstack([np.array(dataset1['Tweet']),
+                       np.array(dataset2['Tweet'])])
+    opinion = np.hstack([np.array(dataset1['Opinion Towards']),
+                         np.array(dataset2['Opinion Towards'])])
+    sentiment = np.hstack([np.array(dataset1['Sentiment']),
+                           np.array(dataset2['Sentiment'])])
+    stance = np.hstack([np.array(dataset1['Stance']),
+                        np.array(dataset2['Stance'])])
 
     data = np.transpose(np.array([target, tweet, opinion, sentiment, stance]))
     np.random.shuffle(data)
 
     data_length = len(data)
-    data_train = data[:round(data_length / 2)]
-    data_test = data[round(data_length / 2):]
-
-    if predict_filename == '':
-        data_test = data[round(data_length / 2):round(data_length / 2) +
-                         round(round(data_length / 2) / 2)]
-        data_valid = data[round(data_length / 2) + round(round(data_length / 2) / 2):]
-        dataset_valid = data_to_dataset(np.transpose(data_valid))
-    else:
-        dataset_valid = format(load(predict_filename, DELIMITER))
-
-    dataset_train = data_to_dataset(np.transpose(data_train))
-    dataset_test = data_to_dataset(np.transpose(data_test))
-    return dataset_train, dataset_test, dataset_valid
+    new_dataset1 = _data_to_dataset(np.transpose(data[:round(data_length / 2)]))
+    new_dataset2 = _data_to_dataset(np.transpose(data[round(data_length / 2):]))
+    return new_dataset1, new_dataset2

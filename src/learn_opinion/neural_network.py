@@ -4,8 +4,8 @@ import sklearn.preprocessing
 
 from keras.models import Model
 from keras.layers import Input, Concatenate, Dense,\
-                         LSTM, Dropout, Embedding,\
-                         Conv1D, MaxPooling1D
+    LSTM, Dropout, Embedding,\
+    Conv1D, MaxPooling1D
 from keras.preprocessing import sequence
 from keras.preprocessing.text import hashing_trick
 
@@ -26,17 +26,20 @@ BATCH_SIZE = 64
 LABEL_BINARIZER = sklearn.preprocessing.LabelBinarizer()
 LABEL_BINARIZER.fit(range(3))
 
+
 def hash_words(dataset, hash_size=VOCAB_SIZE):
     hashed_dataset = []
     for sentence in dataset:
         hashed_dataset.append(hashing_trick(sentence, hash_size, hash_function='md5'))
     return hashed_dataset
 
+
 def format_tweets(tweets):
     formatted_tweets = []
     for sentence in tweets:
         formatted_tweets.append(' '.join(sentence))
     return tweets
+
 
 def create_model(sentence_length, subject_length, vocab_size, embed_output_dim):
     tweets = Input(shape=(sentence_length,), name='tweets')
@@ -55,6 +58,7 @@ def create_model(sentence_length, subject_length, vocab_size, embed_output_dim):
     keras_model = Model(inputs=[tweets, subjects], outputs=output)
     return keras_model
 
+
 def format_dataset(dataset):
     # Extract data
     tweets = format_tweets(dataset['Tweet'])
@@ -70,6 +74,7 @@ def format_dataset(dataset):
 
     return tweets, subjects
 
+
 def format_labels(dataset):
     labels = []
     for row in dataset['Opinion Towards']:
@@ -79,6 +84,7 @@ def format_labels(dataset):
     labels = LABEL_BINARIZER.transform(labels)
 
     return labels
+
 
 def train(dataset_train, dataset_test):
     # Get Train tweets, subjects and labels
@@ -120,6 +126,7 @@ def train(dataset_train, dataset_test):
 
     return keras_model
 
+
 def predict(model, dataset):
     tweets, subjects = format_dataset(dataset)
     prediction = model.predict(
@@ -129,6 +136,7 @@ def predict(model, dataset):
     prediction = np.argmax(prediction, axis=1)
 
     return prediction
+
 
 def main():
     dataset_train = dp.format(dp.load('./dataset/train.csv', ','))
