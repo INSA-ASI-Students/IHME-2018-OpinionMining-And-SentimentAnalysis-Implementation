@@ -25,26 +25,32 @@ def main():
 
 
 def learn_sentiment(sentiment, dataset_train, dataset_test):
+    model = None
     if sentiment == 'learning':
-        return ap.train(dataset_train, dataset_test)
-    return None
+        model = ap.train(dataset_train, dataset_test)
+        ap.export_model(model)
+    return model
 
 
 def learn_opinion(opinion, dataset_train, dataset_test):
+    model = None
     if opinion == 'neural_network':
-        return nn.train(dataset_train, dataset_test)
-    return None
+        model = nn.train(dataset_train, dataset_test)
+        nn.export_model(model)
+    return model
 
 
 def learn_stance(stance, dataset_train, dataset_test):
+    model = None
     if stance == 'stance':
-        return sd.train(dataset_train, dataset_test)
-    return None
+        model = sd.train(dataset_train, dataset_test)
+        sd.export_model(model)
+    return model
 
 
 def learn(train_filename, test_filename, fusion, sentiment, opinion, stance):
-    dataset_train = dm.format(dm.load(train_filename))
-    dataset_test = dm.format(dm.load(test_filename))
+    dataset_train = dm.format(dm.load(train_filename, DELIMITER))
+    dataset_test = dm.format(dm.load(test_filename, DELIMITER))
     if fusion == True:
         dataset_train, dataset_test = dm.fusion(dataset_train, dataset_test)
 
@@ -55,34 +61,32 @@ def learn(train_filename, test_filename, fusion, sentiment, opinion, stance):
         print('Invalid sentiment method')
         return 1
     else:
-        dm.save_model(model_sentiment, 'sentiment', sentiment)
-        prediction['Sentiment'] = predict_sentiment(model_sentiment, dataset_test)
-        print_results('Sentiment', sentiment, dataset_valid, prediction['Sentiment'])
+        prediction['Sentiment'] = predict_sentiment(sentiment, model_sentiment, dataset_test)
+        print_results('Sentiment', sentiment, dataset_test, prediction['Sentiment'])
 
     model_opinion = learn_opinion(opinion, dataset_train, dataset_test)
+    print(model_opinion.__class__.__name__)
     if model_opinion is None:
         print('Invalid opinion method')
         return 1
     else:
-        dm.save_model(model_opinion, 'opinion', opinion)
-        prediction['Opinion Towards'] = predict_opinion(model_opinion, dataset_test)
-        print_results('Opinion Towards', opinion, dataset_valid, prediction['Opinion Towards'])
+        prediction['Opinion Towards'] = predict_opinion(opinion, model_opinion, dataset_test)
+        print_results('Opinion Towards', opinion, dataset_test, prediction['Opinion Towards'])
 
     model_stance = learn_stance(stance, dataset_train, dataset_test)
     if stance_prediction is None:
         print('Invalid stance method')
         return 1
     else:
-        dm.save_model(model_stance, 'stance', stance)
-        prediction['Stance'] = predict_stance(model_stance, dataset_test)
-        print_results('Stance', stance, dataset_valid, stance_prediction)
+        prediction['Stance'] = predict_stance(stance, model_stance, dataset_test)
+        print_results('Stance', stance, dataset_test, stance_prediction)
 
     return 0
 
 
-def predict_sentiment(sentiment, dataset, model):
+def predict_sentiment(sentiment, model, dataset):
     if model == None:
-        model = dm.load_model('sentiment', sentiment)
+        model = ap.import_model()
     if sentiment == 'wordnetaffect':
         return wa.predict(dataset['Tweet'])
     elif sentiment == 'sentiwordnet':
@@ -92,45 +96,47 @@ def predict_sentiment(sentiment, dataset, model):
     return None
 
 
-def predict_opinion(opinion, dataset, model):
+def predict_opinion(opinion, model, dataset):
     if model == None:
-        model = dm.load_model('opinion', opinion)
+        model = nn.import_model()
     if opinion == 'neural_network':
         return nn.predict(model, dataset)
     return None
 
 
-def predict_stance(stance, dataset, model):
+def predict_stance(stance, model, dataset):
     if model == None:
-        model = dm.load_model('stance', stance)
+        model = sd.import_model()
     if stance == 'stance':
         return sd.predict_stance(dataset, model)
     return None
 
 
-def predict(predict_filename, output):
-    dataset = dm.format(dm.load(predict_filename))
+def predict(predict_filename, sentiment, opinion, stance, output):
+    dataset = dm.format(dm.load(predict_filename, '\t'))
 
-    sentiment_prediction = predict_sentiment(sentiment, dataset, None)
+    sentiment_prediction = predict_sentiment(sentiment, None, dataset)
     if sentiment_prediction is None:
         print('Invalid sentiment method')
         return 1
     else:
         dataset['Sentiment'] = sentiment_prediction
 
-    opinion_prediction = predict_opinion(opinion, dataset, None)
+    opinion_prediction = predict_opinion(opinion, None, dataset)
     if opinion_prediction is None:
         print('Invalid opinion method')
         return 1
     else:
         dataset['Opinion Towards'] = opinion_prediction
 
-    stance_prediction = predict_stance(sentiment, dataset, None)
+    stance_prediction = predict_stance(sentiment, None, dataset)
     if stance_prediction is None:
         print('Invalid stance method')
         return 1
+    else:
+        dataset['Stance'] = stance_prediction
 
-    dm.save(output, dataset, DELIMITER)
+    dm.save(output, dataset, '\t')
     return 0
 
 
@@ -148,7 +154,7 @@ def define_parameters(args):
     fusion = False
     train_filename = './dataset/train.csv'
     test_filename = './dataset/test.csv'
-    predict_filename = ''
+    predict_filename = './dataset/predict.txt'
     sentiment = 'learning'
     opinion = 'neural_network'
     stance = 'stance'

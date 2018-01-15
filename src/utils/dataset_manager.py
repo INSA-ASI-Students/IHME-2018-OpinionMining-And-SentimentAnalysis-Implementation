@@ -8,14 +8,6 @@ import numpy as np
 DELIMITER = ','
 
 
-def load_model(type, method):
-    return None
-
-
-def save_model(model, type, method):
-    pass
-
-
 def load(filename, delimiter):
     dataset = []
     with open(filename, 'r', encoding='ISO 8859-2') as csvfile:

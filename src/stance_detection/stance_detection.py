@@ -1,6 +1,17 @@
 import numpy as np
 from sklearn.svm import SVC
 from sklearn.preprocessing import LabelEncoder
+from sklearn.externals import joblib
+
+FILENAME = 'dist/stance.model.pkl'
+
+
+def export_model(model):
+    joblib.dump(model, FILENAME)
+
+
+def import_model():
+    return joblib.load(FILENAME)
 
 
 def encode_data(lb, data):
