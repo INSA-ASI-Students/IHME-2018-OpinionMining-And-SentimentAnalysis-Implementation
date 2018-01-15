@@ -4,12 +4,14 @@ import sklearn.preprocessing
 
 from keras.models import Model, load_model
 from keras.layers import Input, Concatenate, Dense,\
-    LSTM, Dropout, Embedding,\
-    Conv1D, MaxPooling1D
+                         SimpleRNN, Dropout, Embedding,\
+                         Conv1D, MaxPooling1D
+from keras.optimizers import Adam
 from keras.preprocessing import sequence
 from keras.preprocessing.text import hashing_trick
 
 import numpy as np
+np.set_printoptions(threshold=np.nan)
 
 from utils import dataset_manager as dp
 
@@ -21,6 +23,8 @@ MAX_SUBJECT_LENGTH = 10
 VOCAB_SIZE = 2**20
 # Batch size
 BATCH_SIZE = 64
+# EPOCHS
+EPOCHS = 10
 
 # Binarizer (To get one hot encoded labels)
 LABEL_BINARIZER = sklearn.preprocessing.LabelBinarizer()
@@ -52,16 +56,15 @@ def format_tweets(tweets):
 
 
 def create_model(sentence_length, subject_length, vocab_size, embed_output_dim):
-    tweets = Input(shape=(sentence_length,), name='tweets')
     subjects = Input(shape=(subject_length,), name='subjects')
-    concat = Concatenate(axis=1)([tweets, subjects])
 
+    tweets = Input(shape=(sentence_length,), name='tweets')
+    concat = Concatenate(axis=1)([subjects, tweets])
     embed = Embedding(vocab_size, embed_output_dim)(concat)
     conv_1 = Conv1D(filters=32, kernel_size=3, padding='same', activation='relu')(embed)
     pool_1 = MaxPooling1D(pool_size=2)(conv_1)
-    conv_2 = Conv1D(filters=64, kernel_size=3, padding='same', activation='relu')(pool_1)
-    pool_2 = MaxPooling1D(pool_size=2)(conv_2)
-    rnn = LSTM(100, recurrent_dropout=0.2)(pool_2)
+    rnn = SimpleRNN(100, recurrent_dropout=0.2)(pool_1)
+
     dropout = Dropout(0.2)(rnn)
     output = Dense(3, activation='sigmoid')(dropout)
 
@@ -113,9 +116,15 @@ def train(dataset_train, dataset_test):
         VOCAB_SIZE,
         embedding_vector_length
     )
+
+    lr = 0.01
+    beta_1 = 0.9
+    beta_2 = 0.9
+    decay = 0.01
+    optimizer = Adam(lr, beta_1, beta_2, decay=decay)
     keras_model.compile(
         loss='binary_crossentropy',
-        optimizer='adam',
+        optimizer=optimizer,
         metrics=['accuracy']
     )
 
@@ -123,7 +132,7 @@ def train(dataset_train, dataset_test):
         {'tweets': train_tweets, 'subjects': train_subjects},
         train_labels,
         batch_size=BATCH_SIZE,
-        epochs=10
+        epochs=EPOCHS
     )
 
     # Test
@@ -153,7 +162,7 @@ def main():
     dataset_test = dp.format(dp.load('./dataset/test.csv', ','))
 
     model = train(dataset_train, dataset_test)
-    predict(model, dataset_test)
+    print(predict(model, dataset_test))
     return 0
 
 
@@ -271,4 +280,23 @@ if __name__ == '__main__':
 # Résultat : Loss : 0.03 ; Test accuracy : 72.95%
 # Pas de surapprentissage. Le fait que le résultat en test ne soit pas
 # vraiment élevé est dû au fait qu'il y a peu de données sur lesquelles
-# entrainer le réseau de neurones
+# entrainer le réseau de neurones.
+# Après plusieurs tests, il semblerait que ce modèle ci ne donne pas de prédictions correctes.
+
+# 8ème modèle :
+#
+# loss : binary_crossentropy ; optimizer : adam (0.01, 0.9, 0.9, 0.01)
+#
+# Changement de modèle car le précédent ne donnait pas des résultats convenables
+#
+# Input
+# Convolution (32, 3)
+# MaxPooling (2)
+# SimpleRNN (100, recurrent_dropout=0.2)
+# Dropout (0.2)
+# Dense (3)
+# Activation('sigmoid')
+#
+# Résultat : Loss : 0.0084 ; Test accuracy : 71.05%
+# Remarque : Le modèle semble ne jamais prédire la classe 3 ( The tweet is not explicitly expressing opinion )
+#            à cause du fait que cette classe est sous représentée.
