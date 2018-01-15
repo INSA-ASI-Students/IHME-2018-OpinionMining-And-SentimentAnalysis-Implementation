@@ -93,9 +93,56 @@ Avec-prétraitement & 54,6\%                   \\ \hline
 
 \subsection{Classifiers}
 
+\par Dans cette partie nous allons nous concentrer sur de la prédiction de sentiment à l'aide de classifier. Contrairement aux deux autres partie nous allons avoir besoin de deux jeux de données, un jeu de donnée d'apprentissage et un jeu de donnée de test. Ainsi à partir du jeu d'apprentissage on va construire notre modèle de prédiction et on va prédire sur les données de test. \\
+
+\par Pour l'utilisation de classifier nous nous sommes tourné vers l'utilisation de la librairie scikit-learn et nltk. \\
+
+\par \textbf{Principe : } \\
+\par Pour l'apprentissage les classifier nltk fonctionne avec des structures de caractéristiques, dans notre cas avec des dictionnaires associant le nom d'une caractéristique à une valeur. 
+\par D'après une étude bibliographique nous nous sommes tourné vers l'étude de Naive Bayes Classifier dans un premier temps puis ensuite sur des classifiers alternatif.  
+\par Nous utilisons ce type de classifier basées sur les fréquences de mots associées à chaque étiquette de positif ou négatif. \\
+
+\par Sur le jeu d'apprentissage pour construire le modèle on va utiliser les informations suivantes : \\
+\begin{itemize}
+	\item Tweet\_train
+	\item Sentiment\_train \\
+\end{itemize}
 
 
+\par \textbf{Étape de la méthode :} \\
+\begin{itemize}
+	\item Étape 1 : Création des dictionnaires de caractéristiques. On va récupérer trois listes contenant tous les tweets dont le sentiment est 'positif', 'négatif' ou 'neutre' et pour chacune des listes on va créer trois nouvelles listes contenant tous les mots relatif à un tweet positive, négatif ou neutre. Pour optimiser l'analyse qui va suivre on ne conservera que les mots de plus de 6 caractères. A partir de l'extraction des mots de chaque labels, on va construire les dictionnaires de caractéristiques nécessaire à l'utilisation des classifiers. \\
+	\item Étape 2 : Avec l'utilisation des librairies on va pouvoir construire des classifiers et estimer la précision des classifiers. On va apprendre le modèle sur un set d'apprentissage composait des structures de caractéristiques pour label positif, négatif et neutre d'apprentissage et on va calculer la précision du modèle avec les structures de caractéristiques de test pour label positif, négatif et neutre du jeu de test. \\
+\end{itemize}
 
+\par \textbf{Méthode alternative }: \\
+\par Dans la méthode décrite précédemment on construisait nous même nos dictionnaires de caractéristiques mais il est possible d'utiliser les outils de librairies pour les remplacer comme la méthode TF*IDF comme méthode de pondération pour obtenir les structures de caractéristiques pour mettre en place les classifier.
+\par C'est donc avec la méthode TF*IDF que nous avons également construit nos classifier et que nous avons évaluer le taux de bonne prédictions.
+
+\par \textbf{Résultats :} \\
+
+
+\begin{table}[h!]
+\centering
+\caption{Comparaison des taux de bonne prédiction des classifiers selon deux méthodes}
+\label{my-label}
+\begin{tabular}{|l|l|l|}
+\hline
+                   & \begin{tabular}[c]{@{}l@{}}Précision des classifiers avec \\ des dictionnaires de caractéristiques manuel\end{tabular} & \begin{tabular}[c]{@{}l@{}}Taux de bonne prédiction\\ avec la méthode TF*IDS\end{tabular} \\ \hline
+BernoulliNB        & 66.9\%                                                                                                                 & 71.2\%                                                                                    \\ \hline
+MultinomialNB      & 67.1\%                                                                                                                 & 69,2\%                                                                                    \\ \hline
+LogisticRegression & 66.8\%                                                                                                                 & 72.7\%                                                                                    \\ \hline
+SGDClassifier      & 63,3\%                                                                                                                 & 70,9\%                                                                                    \\ \hline
+SVC                & 65\%                                                                                                                   & 65\%                                                                                      \\ \hline
+LinearSVC          & 61,6\%                                                                                                                 & 72.1\%                                                                                    \\ \hline
+\end{tabular}
+\end{table}
+
+\par \textbf{Conclusion :} \\
+\par La méthode la plus efficace est la méthode utilisant TD*IDF avec le classifier Regression Logistique. \\
+
+
+ 
 \section{"Opinion towards" detection}
 
 \section{Stance detection}

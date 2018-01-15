@@ -1,0 +1,23 @@
+@startuml
+file "Training Data" as TrainD { 
+}
+
+database "Model" {
+}
+
+file "Test Data" as TestD {
+}
+
+rectangle "Algorithme de machine learning" as r
+
+
+rectangle "Taux de précision" as p
+
+rectangle "Label prédit" as l
+
+TrainD --> r
+r --> Model
+Model --> TestD
+TestD --> p
+TestD --> l
+@enduml

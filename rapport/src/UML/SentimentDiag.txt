@@ -1,0 +1,58 @@
+@startuml
+rectangle "Sentiment Analysis" as SA
+
+rectangle "Approche analyse lexicale" as AL
+
+rectangle "Sentiwordnet" as senti
+
+rectangle "Sentiwordnet + Wordnet" as sw
+
+rectangle "Approche Machine Learning" as AM
+
+rectangle "Linear Classifiers" as LC
+
+rectangle "Probabiliste Classifiers" as PC
+
+rectangle "Méthode dictionnaire de fréquence" as dict
+
+rectangle "Méthode TF*IDF" as tf
+
+rectangle "Naive Bayes Approach" as NB
+
+rectangle "Multinomial Naive Bayes" as multi
+
+rectangle "Bernoulli Naive Bayes" as bernoulli
+
+rectangle "Logistic Regression" as regression
+
+rectangle "Stochastic gradient descent classifier" as sgd
+
+rectangle "Support Vector Classification" as svc
+
+rectangle "Linear Support Vector Classification" as lsvc
+
+
+SA --> AL
+SA -> AM
+
+AL --> senti
+AL --> sw
+
+AM --> dict
+AM --> tf
+
+dict --> LC
+dict --> PC
+
+tf --> LC
+tf --> PC
+
+PC --> NB
+NB --> multi
+NB --> bernoulli
+
+LC --> regression
+LC --> sgd
+LC --> svc
+LC --> lsvc
+@enduml
