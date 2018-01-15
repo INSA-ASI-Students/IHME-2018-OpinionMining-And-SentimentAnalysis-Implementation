@@ -1,0 +1,26 @@
+@startuml
+file "Corpus de Tweet" as Tweet { 
+}
+
+
+node "Traitement" {
+  queue "Pré-traitement" as pre
+  queue "POS Tagging" as pos
+}
+
+node "Analyse" {
+  queue "Sentiworndet scoring" as senti
+  queue "Sum of Sentiwordnet score" as sum
+}
+
+file "Sentiment prédiction" as pred { 
+}
+
+
+
+Tweet --> Traitement
+pre --> pos
+Traitement --> Analyse
+senti --> sum
+Analyse --> pred
+@enduml
