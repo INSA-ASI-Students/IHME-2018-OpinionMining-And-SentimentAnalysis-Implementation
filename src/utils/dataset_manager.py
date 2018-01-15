@@ -38,7 +38,7 @@ def save(filename, dataset, delimiter):
         fieldnames = []
         for col in dataset:
             fieldnames.append(col)
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=delimiter)
         writer.writeheader()
         for i in range(0, len(dataset[fieldnames[0]])):
             row = {}
