@@ -34,10 +34,8 @@ def format(dataset):
 
 
 def save(filename, dataset, delimiter):
+    fieldnames = ['ID', 'Target', 'Tweet', 'Stance']
     with open(filename, 'w') as csvfile:
-        fieldnames = []
-        for col in dataset:
-            fieldnames.append(col)
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=delimiter)
         writer.writeheader()
         for i in range(0, len(dataset[fieldnames[0]])):
