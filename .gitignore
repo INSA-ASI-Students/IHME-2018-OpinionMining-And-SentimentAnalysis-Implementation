@@ -1,5 +1,6 @@
 src/venv
 src/dist/*.model.*
+output.csv
 __pycache__
 .DS_Store
 

@@ -145,7 +145,7 @@ def predict(model, dataset):
     )
     prediction = np.argmax(prediction, axis=1)
 
-    return prediction
+    return prediction.tolist()
 
 
 def main():

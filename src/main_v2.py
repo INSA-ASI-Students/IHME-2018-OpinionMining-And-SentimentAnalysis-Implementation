@@ -62,10 +62,10 @@ def learn(train_filename, test_filename, fusion, sentiment, opinion, stance):
         return 1
     else:
         prediction['Sentiment'] = predict_sentiment(sentiment, model_sentiment, dataset_test)
+        print(prediction['Sentiment'])
         print_results('Sentiment', sentiment, dataset_test, prediction['Sentiment'])
 
     model_opinion = learn_opinion(opinion, dataset_train, dataset_test)
-    print(model_opinion.__class__.__name__)
     if model_opinion is None:
         print('Invalid opinion method')
         return 1
@@ -74,12 +74,12 @@ def learn(train_filename, test_filename, fusion, sentiment, opinion, stance):
         print_results('Opinion Towards', opinion, dataset_test, prediction['Opinion Towards'])
 
     model_stance = learn_stance(stance, dataset_train, dataset_test)
-    if stance_prediction is None:
+    if model_stance is None:
         print('Invalid stance method')
         return 1
     else:
         prediction['Stance'] = predict_stance(stance, model_stance, dataset_test)
-        print_results('Stance', stance, dataset_test, stance_prediction)
+        print_results('Stance', stance, dataset_test, prediction['Stance'])
 
     return 0
 
@@ -108,12 +108,13 @@ def predict_stance(stance, model, dataset):
     if model == None:
         model = sd.import_model()
     if stance == 'stance':
-        return sd.predict_stance(dataset, model)
+        return sd.predict(dataset, model)
     return None
 
 
 def predict(predict_filename, sentiment, opinion, stance, output):
-    dataset = dm.format(dm.load(predict_filename, '\t'))
+    original_dataset = dm.load(predict_filename, '\t')
+    dataset = dm.format(original_dataset)
 
     sentiment_prediction = predict_sentiment(sentiment, None, dataset)
     if sentiment_prediction is None:
@@ -129,14 +130,13 @@ def predict(predict_filename, sentiment, opinion, stance, output):
     else:
         dataset['Opinion Towards'] = opinion_prediction
 
-    stance_prediction = predict_stance(sentiment, None, dataset)
+    stance_prediction = predict_stance(stance, None, dataset)
     if stance_prediction is None:
         print('Invalid stance method')
         return 1
     else:
-        dataset['Stance'] = stance_prediction
-
-    dm.save(output, dataset, '\t')
+        original_dataset['Stance'] = stance_prediction
+    dm.save(output, original_dataset, '\t')
     return 0
 
 
