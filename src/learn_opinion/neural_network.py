@@ -36,10 +36,8 @@ FILENAME = 'dist/opinion.model.h5'
 def export_model(model):
     model.save(FILENAME)
 
-
 def import_model():
     return load_model(FILENAME)
-
 
 def hash_words(dataset, hash_size=VOCAB_SIZE):
     hashed_dataset = []
