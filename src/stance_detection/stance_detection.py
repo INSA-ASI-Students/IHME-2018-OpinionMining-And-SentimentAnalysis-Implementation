@@ -4,6 +4,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.externals import joblib
 
 FILENAME = 'dist/stance.model.pkl'
+FILENAME_LABELS = 'dist/stance.labels.pkl'
 
 
 def export_model(model):
@@ -12,6 +13,12 @@ def export_model(model):
 
 def import_model():
     return joblib.load(FILENAME)
+
+def export_labels(labels):
+    joblib.dump(labels, FILENAME_LABELS)
+
+def import_labels():
+    return joblib.load(FILENAME_LABELS)
 
 
 def encode_data(lb, data):
@@ -37,7 +44,7 @@ def prepare_data(dataset_train, dataset_test, lb_target, lb_opinion, lb_sentimen
     return X_train, X_test, stance_train, stance_test
 
 
-def get_model(dataset_train, dataset_test):
+def train(dataset_train, dataset_test):
     [lb_target, lb_opinion, lb_sentiment, lb_stance] = [LabelEncoder(
     ), LabelEncoder(), LabelEncoder(), LabelEncoder()]
     X_train, X_test, y_train, y_test = prepare_data(
@@ -45,16 +52,14 @@ def get_model(dataset_train, dataset_test):
     print('Learn SVM model for stance detection')
     model = SVC(kernel='rbf', C=100, gamma=0.1)
     model.fit(X_train, y_train)
-    dec = model.predict(X_test)
-    error = sum((y_test - dec) != 0) / len(y_test) * 100
-    print('Test good rate in percent : ')
-    print(100 - error)
-    return model, lb_target, lb_opinion, lb_sentiment, lb_stance
+    export_labels([lb_target, lb_opinion, lb_sentiment, lb_stance])
+    return model
 
 
-def predict_stance(dataset, model, opinion_prediction, sentiment_prediction, lb_target, lb_opinion, lb_sentiment, lb_stance):
+def predict_stance(dataset, model):
+    [lb_target, lb_opinion, lb_sentiment, lb_stance] = import_labels()
     data = np.array([encode_data(lb_target, dataset['Target']), encode_data(
-        lb_opinion, dataset['Opinion Towards']), encode_data(lb_sentiment, sentiment_prediction)])
+        lb_opinion, dataset['Opinion Towards']), encode_data(lb_sentiment, dataset['Sentiment'])])
     data = np.transpose(data)
     prediction = model.predict(data)
     return lb_stance.inverse_transform(prediction)

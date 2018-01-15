@@ -74,12 +74,12 @@ def learn(train_filename, test_filename, fusion, sentiment, opinion, stance):
         print_results('Opinion Towards', opinion, dataset_test, prediction['Opinion Towards'])
 
     model_stance = learn_stance(stance, dataset_train, dataset_test)
-    if stance_prediction is None:
+    if model_stance is None:
         print('Invalid stance method')
         return 1
     else:
         prediction['Stance'] = predict_stance(stance, model_stance, dataset_test)
-        print_results('Stance', stance, dataset_test, stance_prediction)
+        print_results('Stance', stance, dataset_test, prediction['Stance'])
 
     return 0
 
@@ -151,7 +151,7 @@ def print_results(column, method, dataset, prediction):
 
 def define_parameters(args):
     action = 'learn'
-    fusion = False
+    fusion = True
     train_filename = './dataset/train.csv'
     test_filename = './dataset/test.csv'
     predict_filename = './dataset/predict.txt'
