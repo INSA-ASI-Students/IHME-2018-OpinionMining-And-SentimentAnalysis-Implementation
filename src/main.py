@@ -164,14 +164,20 @@ def define_parameters(args):
             action = arg.split('--action=')[1]
         elif arg.startswith('--sentiment='):
             sentiment = arg.split('--sentiment=')[1]
-        elif arg.startswith('--fusion-dataset'):
-            fusion = True
         elif arg.startswith('--opinion='):
             opinion = arg.split('--opinion=')[1]
         elif arg.startswith('--stance='):
             stance = arg.split('--stance=')[1]
-        elif arg.startswith('--output='):
-            output = arg.split('--output=')[1]
+        elif arg.startswith('--train-file='):
+            train_filename = arg.split('--train-file=')[1]
+        elif arg.startswith('--test-file='):
+            test_filename = arg.split('--test-file=')[1]
+        elif arg.startswith('--predict-file='):
+            predict_filename = arg.split('--predict-file=')[1]
+        elif arg.startswith('--fusion-dataset'):
+            fusion = True
+        elif arg.startswith('--download-requirements'):
+            dependancies.download_nltk()
     return action, fusion, train_filename, test_filename, predict_filename, sentiment, opinion, stance, output
 
 
