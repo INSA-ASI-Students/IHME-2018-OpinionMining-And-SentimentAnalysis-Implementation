@@ -112,29 +112,31 @@ def predict_stance(stance, model, dataset):
     return None
 
 
-def predict(predict_filename, output):
-    dataset = dm.format(dm.load(predict_filename, ' '))
+def predict(predict_filename, sentiment, opinion, stance, output):
+    dataset = dm.format(dm.load(predict_filename, '\t'))
 
-    sentiment_prediction = predict_sentiment(sentiment, dataset, None)
+    sentiment_prediction = predict_sentiment(sentiment, None, dataset)
     if sentiment_prediction is None:
         print('Invalid sentiment method')
         return 1
     else:
         dataset['Sentiment'] = sentiment_prediction
 
-    opinion_prediction = predict_opinion(opinion, dataset, None)
+    opinion_prediction = predict_opinion(opinion, None, dataset)
     if opinion_prediction is None:
         print('Invalid opinion method')
         return 1
     else:
         dataset['Opinion Towards'] = opinion_prediction
 
-    stance_prediction = predict_stance(sentiment, dataset, None)
+    stance_prediction = predict_stance(sentiment, None, dataset)
     if stance_prediction is None:
         print('Invalid stance method')
         return 1
+    else:
+        dataset['Stance'] = stance_prediction
 
-    dm.save(output, dataset, DELIMITER)
+    dm.save(output, dataset, '\t')
     return 0
 
 
