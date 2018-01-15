@@ -62,7 +62,6 @@ def learn(train_filename, test_filename, fusion, sentiment, opinion, stance):
         return 1
     else:
         prediction['Sentiment'] = predict_sentiment(sentiment, model_sentiment, dataset_test)
-        print(prediction['Sentiment'])
         print_results('Sentiment', sentiment, dataset_test, prediction['Sentiment'])
 
     model_opinion = learn_opinion(opinion, dataset_train, dataset_test)
@@ -92,7 +91,7 @@ def predict_sentiment(sentiment, model, dataset):
     elif sentiment == 'sentiwordnet':
         return sw.predict(dataset['Tweet'])
     elif sentiment == 'learning':
-        return ap.predict(model, dataset)
+        return ap.predict(model, dataset['Tweet'])
     return None
 
 
@@ -114,7 +113,7 @@ def predict_stance(stance, model, dataset):
 
 def predict(predict_filename, sentiment, opinion, stance, output):
     original_dataset = dm.load(predict_filename, '\t')
-    dataset = dm.format(original_dataset)
+    dataset = dm.format(dm.load(predict_filename, '\t'))
 
     sentiment_prediction = predict_sentiment(sentiment, None, dataset)
     if sentiment_prediction is None:
