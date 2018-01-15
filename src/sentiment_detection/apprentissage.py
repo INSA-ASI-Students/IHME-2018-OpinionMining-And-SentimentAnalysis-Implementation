@@ -9,6 +9,17 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import make_pipeline
 from utils import metrics
+from sklearn.externals import joblib
+
+FILENAME = 'dist/sentiment.model.pkl'
+
+
+def export_model(model):
+    joblib.dump(model, FILENAME)
+
+
+def import_model():
+    return joblib.load(FILENAME)
 
 
 def get_tweet_sentiment(train_tweet, train_sentiment, test_tweet, test_sentiment):
@@ -179,7 +190,6 @@ def train(dataset_train, dataset_test):
 
     return pipe
 
-
     #success_rate = metrics.success_rate(test_sentiment, y_pred)
     #print('multinomial_nb results good prediction: %s  ' % (success_rate))
 
@@ -187,8 +197,6 @@ def train(dataset_train, dataset_test):
 def predict(model, dataset):
     y_pred = model.predict(dataset)
     return y_pred.tolist()
-
-
 
 
 def main():

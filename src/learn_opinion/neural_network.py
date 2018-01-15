@@ -2,7 +2,7 @@
 
 import sklearn.preprocessing
 
-from keras.models import Model
+from keras.models import Model, load_model
 from keras.layers import Input, Concatenate, Dense,\
     LSTM, Dropout, Embedding,\
     Conv1D, MaxPooling1D
@@ -25,6 +25,16 @@ BATCH_SIZE = 64
 # Binarizer (To get one hot encoded labels)
 LABEL_BINARIZER = sklearn.preprocessing.LabelBinarizer()
 LABEL_BINARIZER.fit(range(3))
+
+FILENAME = 'dist/opinion.model.h5'
+
+
+def export_model(model):
+    model.save(FILENAME)
+
+
+def import_model():
+    return load_model(FILENAME)
 
 
 def hash_words(dataset, hash_size=VOCAB_SIZE):
