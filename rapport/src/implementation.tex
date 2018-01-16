@@ -151,7 +151,7 @@ LinearSVC          & 61,6\%                                                     
 
 \par Nous avons essayé différentes structures de réseaux de neurones afin d'essayer d'obtenir la meilleure prédiction possible.
 
-\par % Explication des différents réseaux qui ont été testés
+\par Tout d'abord, nous nous sommes intéressé aux réseaux de neurones récurrents pour effectuer cette tâche. Nous avons donc mis en place un simple réseau avec un LSTM à 100 cellules. Le résultat obtenu (73,65\% de précision sur les données d'apprentissage) montrait que le réseau avait des difficultés à apprendre les données. Pour résoudre ce problème, nous avons essayé l'ajout de dropout mais sans succès, le coût n'arrivait pas à être correctement minimisé entre chaque epoch. Nous avons donc remplacé les cellules LSTM par des cellules RNN simples, ce qui a eu un effet positif sur l'apprentisssage, mais toujours pas satisfaisant. Nous avons ensuite essayé d'inclure des couches de convolution et de maxpooling afin d'appliquer des filtres aux tweets pour améliorer l'apprentissage. Cette configuration nous satisfaisait jusqu'à ce que nous l'intégrions à l'ensemble des autres solutions pour avoir une chaîne de bout en bout. Mais nous nous sommes rendu compte que finalement, les résultats donnés par cette méthode pouvait très facilement se fausser en fonction du jeu de données à prédire. Nous avons donc finalement décidé de retirer les cellules RNN, nous nous sommes donc retrouvé avec un simple réseau convolutionnel.
 
 \begin{figure}
 	\centering
@@ -160,7 +160,7 @@ LinearSVC          & 61,6\%                                                     
 	\label{fig:nn}
 \end{figure}
 
-\par % Explication du réseau qui a été conservé
+\par Le réseau de neurones retenu (Structure présenté sur la figure \ref{fig:nn}) est donc composé de deux entrées : l'une pour les tweets et l'autre pour la cible de ceux-ci. Ces entrées sont ensuites concaténées en un seul vecteur pour ensuite être passées dans notre réseau convolutionnel qui va appliquer des filtres à notre texte. Enfin, le réseau fait la connection entre la sortie de nos couches convolutionnelles et une couche complètement connectée qui va nous permettre d'obtenir nos prédictions.
 
 
 \subsection{Apprentissage et résultats}
