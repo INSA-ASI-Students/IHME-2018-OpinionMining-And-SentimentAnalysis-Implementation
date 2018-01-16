@@ -166,19 +166,17 @@ LinearSVC          & 61,6\%                                                     
 \subsection{Apprentissage et résultats}
 
 \begin{table}[h!]
-\centering
-\begin{tabular}{|l|l|l|}
-\hline
-                   & \begin{tabular}[c]{@{}l@{}}Précision des classifiers avec \\ des dictionnaires de caractéristiques manuel\end{tabular} & \begin{tabular}[c]{@{}l@{}}Taux de bonne prédiction\\ avec la méthode TF*IDS\end{tabular} \\ \hline
-BernoulliNB        & 66.9\%                                                                                                                 & 71.2\%                                                                                    \\ \hline
-MultinomialNB      & 67.1\%                                                                                                                 & 69,2\%                                                                                    \\ \hline
-LogisticRegression & 66.8\%                                                                                                                 & 72.7\%                                                                                    \\ \hline
-SGDClassifier      & 63,3\%                                                                                                                 & 70,9\%                                                                                    \\ \hline
-SVC                & 65\%                                                                                                                   & 65\%                                                                                      \\ \hline
-LinearSVC          & 61,6\%                                                                                                                 & 72.1\%                                                                                    \\ \hline
-\end{tabular}
-\caption{Paramètres retenus pour le réseau}
-\label{tab:saved_params}
+	\centering
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		\textbf{lr} & \textbf{$\beta_1$} & \textbf{$\beta_2$} & \textbf{decay} & \textbf{epochs} & \textbf{batch size} & \textbf{embedding vector} \\
+		 & & & & & & \textbf{length} \\
+		\hline
+		0.01 & 0.9 & 0.9 & 0.01 & 10 & 64 & 32 \\
+		\hline
+	\end{tabular}
+	\caption{Paramètres retenus pour le réseau.}
+	\label{tab:saved_params}
 \end{table}
 
 \par % Recherche des meilleurs paramètres
