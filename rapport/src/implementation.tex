@@ -145,6 +145,68 @@ LinearSVC          & 61,6\%                                                     
  
 \section{"Opinion towards" detection}
 
+\par 
+
+\subsection{Structure du réseau}
+
+\par Nous avons essayé différentes structures de réseaux de neurones afin d'essayer d'obtenir la meilleure prédiction possible.
+
+\par % Explication des différents réseaux qui ont été testés
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=1.5]{./img/nn.png}
+	\caption{Structure du réseau de neurones retenu}
+	\label{fig:nn}
+\end{figure}
+
+\par % Explication du réseau qui a été conservé
+
+
+\subsection{Apprentissage et résultats}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+                   & \begin{tabular}[c]{@{}l@{}}Précision des classifiers avec \\ des dictionnaires de caractéristiques manuel\end{tabular} & \begin{tabular}[c]{@{}l@{}}Taux de bonne prédiction\\ avec la méthode TF*IDS\end{tabular} \\ \hline
+BernoulliNB        & 66.9\%                                                                                                                 & 71.2\%                                                                                    \\ \hline
+MultinomialNB      & 67.1\%                                                                                                                 & 69,2\%                                                                                    \\ \hline
+LogisticRegression & 66.8\%                                                                                                                 & 72.7\%                                                                                    \\ \hline
+SGDClassifier      & 63,3\%                                                                                                                 & 70,9\%                                                                                    \\ \hline
+SVC                & 65\%                                                                                                                   & 65\%                                                                                      \\ \hline
+LinearSVC          & 61,6\%                                                                                                                 & 72.1\%                                                                                    \\ \hline
+\end{tabular}
+\caption{Paramètres retenus pour le réseau}
+\label{tab:saved_params}
+\end{table}
+
+\par % Recherche des meilleurs paramètres
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.75]{./img/learn_nn_chart.png}
+	\caption{Courbe d'apprentissage en fonction des epochs}
+	\label{fig:nn_app}
+\end{figure}
+
+\par % Commentaire sur la courbe d'apprentissage
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.75]{./img/loss_nn_chart.png}
+	\caption{Courbe de coût en fonction des epochs}
+	\label{fig:nn_loss}
+\end{figure}
+
+\par % Commentaire sur la courbe de coût
+
+\par % Commentaire sur le résultat de test (70% -> Peu de données d'apprentissage, classes sous représentées)
+
+% Sources utilisées :
+% Convolutional Neural Networks for Sentiment Analysis on Italian Tweets (2016)
+% Explaining Recurrent Neural Network Predictions in Sentiment Analysis (2017)
+
 \section{Stance detection}
 
 La partie "Stance detection" consiste à déterminer l'opinion du tweet par rapport au sujet, c'est-à-dire si le tweet est "pour", "contre" ou "neutre" vis à vis du sujet. Cette étape prend en entrée le "Target" (le sujet), le "Sentiment" (positif, négatif ou autre) et l'"Opinion Towards" (le tweet donne un opinion par rapport au sujet, le tweet donne un opinion qui n'a pas de rapport avec le sujet, ou le tweet ne donne pas d'opinion). Ces deux derniers sont déterminés dans les étapes précédentes. Cette dernière étape est donc sensible aux taux d'erreur précédemment obtenus.
