@@ -66,7 +66,7 @@ def main():
     dataset_train = dm.format(dm.load('./dataset/train.csv', ','))
     dataset_test = dm.format(dm.load('./dataset/test.csv', ','))
 
-    with open('benchmark_opinion.csv', 'w') as bench_file:
+    with open('./dist/opinion.benchmark.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
         for lr in lrs:
             for beta_1 in betas_1:
