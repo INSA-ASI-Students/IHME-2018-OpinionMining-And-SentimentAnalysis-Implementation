@@ -174,6 +174,8 @@ def define_parameters(args):
             test_filename = arg.split('--test-file=')[1]
         elif arg.startswith('--predict-file='):
             predict_filename = arg.split('--predict-file=')[1]
+        elif arg.startswith('--output-file='):
+            output = arg.split('--output-file=')[1]
         elif arg.startswith('--fusion-dataset'):
             fusion = True
         elif arg.startswith('--download-requirements'):

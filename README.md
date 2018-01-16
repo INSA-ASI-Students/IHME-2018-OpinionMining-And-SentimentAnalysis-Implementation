@@ -8,7 +8,7 @@ $ virtualenv venv
 $ source ./venv/bin/activate
 $ pip3 install -r requirements.txt
 $ python3 main.py --action="learn" --download-requirements
-$ python3 main.py --action="predict" --output="./eval/prediction.csv"
+$ python3 main.py --action="predict" --output-file="./eval/prediction.csv"
 ```
 
 ## Options du script "main"
