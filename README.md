@@ -8,8 +8,7 @@ $ virtualenv venv
 $ source ./venv/bin/activate
 $ pip3 install -r requirements.txt
 $ python3 main.py --action="learn" --download-requirements
-$ python3 main.py --action="predict"
-$ perl ./eval_semeval16_task6_v2/eval.pl ./eval_semeval16_task6_v2/SemEval2016-Task6-subtaskA-testdata-gold.txt ./output.csv
+$ python3 main.py --action="predict" --output="./eval/prediction.csv"
 ```
 
 ## Options du script "main"
@@ -25,3 +24,11 @@ Il est possible de lancer le script avec plusieurs options:
 * `--predict-file=` afin de spécifier le path local du fichier de prediction à utiliser
 * `--output-file=` afin de spécifier le path local du fichier ou seront écris les résultats à l'issue de la prediction
 * `--download-requirements` afin de télécharger les dépendances
+
+## Vérification des performances de la prediction
+
+Un script perl permet de tester les performance de notre jeu de données utilisé pour les predictions:
+```bash
+$ cd eval
+$ perl ./eval.pl gold_data.txt ./prediction.csv
+```
