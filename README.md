@@ -9,9 +9,11 @@ $ source ./venv/bin/activate
 $ pip3 install -r requirements.txt
 $ python3 main.py --action="learn" --download-requirements
 $ python3 main.py --action="predict"
+$ perl ./eval_semeval16_task6_v2/eval.pl ./eval_semeval16_task6_v2/SemEval2016-Task6-subtaskA-testdata-gold.txt ./output.csv
 ```
 
-## Options
+## Options du script "main"
+
 Il est possible de lancer le script avec plusieurs options:
 * `--action=` pour déterminer l'action à executer, au choix: `predict`, `learn`
 * `--fusion-dataset` afin de fusionner, mélanger, et redécouper les jeux de données lors d'un learn
