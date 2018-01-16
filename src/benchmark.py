@@ -1,11 +1,12 @@
 import csv
 import gc
 
-from learn_opinion import neural_network as nn
+from opinion_detection import neural_network as nn
 from utils import dataset_manager as dm
 
 from keras.optimizers import Adam
 from keras import backend as K
+
 
 def benchmark_opinion(dataset_train, dataset_test, embedding_vector_length, batch_size, epochs, lr, beta_1, beta_2, decay):
     train_tweets, train_subjects = nn.format_dataset(dataset_train)
@@ -51,6 +52,7 @@ def benchmark_opinion(dataset_train, dataset_test, embedding_vector_length, batc
     K.clear_session()
 
     return train_score, test_score
+
 
 def main():
     lrs = [1, 0.1, 0.01]
@@ -103,6 +105,7 @@ def main():
                                     )
 
     return 0
+
 
 if __name__ == '__main__':
     exit(main())

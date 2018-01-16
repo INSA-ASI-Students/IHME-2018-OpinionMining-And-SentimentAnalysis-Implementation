@@ -8,7 +8,7 @@ from sentiment_detection import sentiwordnet as sw
 from sentiment_detection import wordnetaffect as wa
 from sentiment_detection import apprentissage as ap
 from stance_detection import stance_detection as sd
-from learn_opinion import neural_network as nn
+from opinion_detection import neural_network as nn
 
 DELIMITER = ','
 
