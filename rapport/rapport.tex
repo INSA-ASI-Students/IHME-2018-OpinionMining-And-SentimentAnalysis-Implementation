@@ -30,7 +30,7 @@
 	\begin{titlepage}
 		\vfill
 		\begin{figure}
-			\includegraphics[scale=0.3]{img/logoINSARouen.png}
+			\includegraphics[scale=0.3]{img/logo_insa_rouen.png}
 		\end{figure}
 
 		\maketitle
@@ -56,36 +56,38 @@
 \newpage
 \part{Introduction}
 	\input{src/introduction.tex}
-
+	\newpage
 % Expliquer notre idée et les différentes étapes
 
-\newpage
 \part{Conception}
 
 \section{Conception Préliminaire}
 	\input{src/conception_preliminaire.tex}
+	\newpage
 
 
 \section{Conception Détaillée}
 	\input{src/conception_detaillee.tex}
+	\newpage
 
 
 \newpage
 \part{Implémentation}
 	\input{src/implementation.tex}
-	
+	\newpage
+
 \newpage
 \part{Résultats}
 	\input{src/resultats.tex}
+	\newpage
 
-
-\newpage
 \part{Conclusion}
 	\input{src/conclusion.tex}
+	\newpage
 
 \newpage
-\part{Conclusion}
-	\subsection{Annexe : POC - Find Stance}
+\part{Annexes}
+	\subsection{POC - Find Stance}
 	\label{annexe-stance-detection}	%\input{src/annexes/POC_FindStance_V2/POC_FindStance_V2.tex}
 	\includepdf[pages={1,2,3,4,5}]{src/annexes/POC_FindStance_V2/POC_FindStance_V2.pdf}
 \end{document}
