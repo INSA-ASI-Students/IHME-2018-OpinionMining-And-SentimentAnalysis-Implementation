@@ -1,0 +1,14 @@
+\par Durant ce projet l'objectif était de réaliser une analyse de tweet afin d'en extraire le stance, c'est à dire déterminer si l'auteur du tweet était 'POUR', 'CONTRE' ou 'NEUTRE' via à vis d'un sujet donnée. \\
+
+\par Pour cela nous avons donc mis en place plusieurs briques logicielles afin d'arriver à ce résultat. Dans un premier temps nous avons formater les données, puis nous avons commencé par déterminer le sentiment du tweet, c'est à dire si le tweet avait une polarité positive, négative ou neutre. Ensuite l'étape suivante était de déterminer l'opinion toward, c'est à dire déterminer si le tweet faisait référence à un sujet donné de façon direct ou non. L'étape final est donc de déterminer à partir du sentiment et de l'opinion toward, le stance POUR, CONTRE ou NEUTRE. \\
+
+\par Notre choix a été de décomposer les étapes pour arriver au stance afin d'avoir plusieurs systèmes de traitement afin d'être capable d'optimiser chacun des blocs afin de réduire l'erreur finale. 
+
+\par Ainsi à partir de données d'apprentissage pour les blocs de machine learning nous avons construit nos modèles et nous avons pu appliquer notre chaine de traitement à des données de test pour estimer les taux de précision des solutions. Voici ce que l'on obtient : \\
+
+\par Pour la construction de modèle nous avons 
+\begin{itemize}
+	\item Sentiment Analysis : 72.7\% de bonne prédiction.
+	\item Opinion Toward : 73,21\%  de bonne prédiction.
+	\item Stance détection : 75,51\% de bonne prédiction.
+\end{itemize}
