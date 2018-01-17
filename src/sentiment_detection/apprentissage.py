@@ -185,7 +185,7 @@ def train(dataset_train, dataset_test):
     accuracy = logistic_regression(train_set, test_set)
     print('Good rate in percent: %s  ' % (accuracy))
 
-    pipe = make_pipeline(TfidfVectorizer(), Logistic_regression())
+    pipe = make_pipeline(TfidfVectorizer(), LogisticRegression())
     pipe.fit(train_tweet, train_sentiment)
 
     return pipe
