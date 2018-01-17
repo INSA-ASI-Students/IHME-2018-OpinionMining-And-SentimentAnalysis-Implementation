@@ -1,22 +1,21 @@
-\par Durant ce projet l'objectif était de réaliser une analyse de tweets afin d'en extraire la stance, c'est à dire déterminer si l'auteur du tweet était 'POUR', 'CONTRE' ou 'NEUTRE' via à vis d'un sujet donné. \\
+\par Durant ce projet l'objectif était de réaliser une analyse de tweets afin d'en extraire la stance, c'est à dire déterminer si l'auteur du tweet était 'POUR', 'CONTRE' ou 'NEUTRE' via à vis d'un sujet donné. 
 
 \par Pour cela nous avons donc mis en place plusieurs briques logicielles afin d'arriver à ce résultat. Dans un premier temps, nous avons formaté les données, puis nous avons commencé par déterminer le sentiment du tweet, c'est à dire si le tweet avait une polarité positive, négative ou neutre. L'étape suivante était de déterminer l'opinion toward, c'est à dire déterminer si le tweet faisait référence à un sujet donné de façon direct ou non. L'étape finale était donc de déterminer à partir du sentiment et de l'opinion toward, la stance POUR, CONTRE ou NEUTRE. \\
 
-\par Notre choix a été de décomposer les étapes pour arriver au stance afin d'avoir plusieurs systèmes de traitement, afin d'être capable d'optimiser chacun des blocs afin de réduire l'erreur finale.  \\
+\par Notre choix a été de décomposer les étapes pour arriver au stance afin d'avoir plusieurs systèmes de traitement, afin d'être capable d'optimiser chacun des blocs afin de réduire l'erreur finale.  
 
 \par Pour la construction du modèle, nous avons mis en place des réseaux de neurones, des classifiers et de l'analyse lexicale. Voici les taux de bonne prédiction des meilleurs solutions retenues : \\
 \begin{itemize}
 	\item Sentiment Analysis : 72.7\% de bonne prédiction par régression logistique.
 	\item Opinion Toward : 73,21\%  de bonne prédiction avec un réseau de neurones.
-	\item Stance détection : 75,51\% de bonne prédiction avec une SVM.
+	\item Stance détection : 75,51\% de bonne prédiction avec une SVM. \\
 \end{itemize}
 
-\par À partir des données d'apprentissage pour les blocs de machine learning nous avons construit nos modèles et nous avons pu appliquer notre chaîne de traitements à des données de test pour estimer les taux de précision des solutions. Ainsi, à partir d'un jeu de données test on obtient un taux de bonne prédiction du stance de 73.619\% ce qui est correcte. \\
+\par À partir des données d'apprentissage pour les blocs de machine learning nous avons construit nos modèles et nous avons pu appliquer notre chaîne de traitements à des données de test pour estimer les taux de précision des solutions. Ainsi, à partir d'un jeu de données test on obtient un taux de bonne prédiction du stance de 73.619\% ce qui est correcte. 
 
 \par Nous avons mesuré notre modèle avec le concours international SemEval. Pour cela un script est fourni pour obtenir la métrique du modèle à comparer avec les autres participants, voici ce que l'on obtient : \\
 
 \begin{verbatim}
-
 ============
 Results
 ============
