@@ -149,6 +149,65 @@ LinearSVC          & 61,6\%                                                     
  
 \section{"Opinion towards" detection}
 
+\par 
+
+\subsection{Structure du réseau}
+
+\par Nous avons essayé différentes structures de réseaux de neurones afin d'essayer d'obtenir la meilleure prédiction possible.
+
+\par Tout d'abord, nous nous sommes intéressé aux réseaux de neurones récurrents pour effectuer cette tâche. Nous avons donc mis en place un simple réseau avec un LSTM à 100 cellules. Le résultat obtenu (73,65\% de précision sur les données d'apprentissage) montrait que le réseau avait des difficultés à apprendre les données. Pour résoudre ce problème, nous avons essayé l'ajout de dropout mais sans succès, le coût n'arrivait pas à être correctement minimisé entre chaque epoch. Nous avons donc remplacé les cellules LSTM par des cellules RNN simples, ce qui a eu un effet positif sur l'apprentisssage, mais toujours pas satisfaisant. Nous avons ensuite essayé d'inclure des couches de convolution et de maxpooling afin d'appliquer des filtres aux tweets pour améliorer l'apprentissage. Cette configuration nous satisfaisait jusqu'à ce que nous l'intégrions à l'ensemble des autres solutions pour avoir une chaîne de bout en bout. Mais nous nous sommes rendu compte que finalement, les résultats donnés par cette méthode pouvait très facilement se fausser en fonction du jeu de données à prédire. Nous avons donc finalement décidé de retirer les cellules RNN, nous nous sommes donc retrouvé avec un simple réseau convolutionnel.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=1.5]{./img/nn.png}
+	\caption{Structure du réseau de neurones retenu}
+	\label{fig:nn}
+\end{figure}
+
+\par Le réseau de neurones retenu (Structure présentée sur la figure \ref{fig:nn}) est donc composé de deux entrées : l'une pour les tweets et l'autre pour la cible de ceux-ci. Ces entrées sont ensuites concaténées en un seul vecteur pour ensuite être passées dans notre réseau convolutionnel qui va appliquer des filtres à notre texte. Enfin, le réseau fait la connection entre la sortie de nos couches convolutionnelles et une couche complètement connectée qui va nous permettre d'obtenir nos prédictions.
+
+
+\subsection{Apprentissage et résultats}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|l|l|l|l|l|l|}
+		\hline
+		\textbf{lr} & \textbf{$\beta_1$} & \textbf{$\beta_2$} & \textbf{decay} & \textbf{epochs} & \textbf{batch size} \\
+		\hline
+		0.01 & 0.9 & 0.9 & 0.01 & 10 & 64 \\
+		\hline
+	\end{tabular}
+	\caption{Paramètres retenus pour le réseau.}
+	\label{tab:saved_params}
+\end{table}
+
+\par L'une des étapes une fois le réseau construit a été de trouver les paramètres pour lesquels celui-ci apprenait le mieux et donnait les meilleurs résultats. Du fait de la multiplicité des paramètres, nous avons décidé de nous concentrer principalement sur les paramètres de l'optimiseur utilisé, c'est-à-dire un optimiseur suivant l'algorithme d'Adam. Les résultats obtenus à la suite d'un script testant divers paramètres, nous avons retenus présentés dans le tableau \ref{tab:saved_params}. Ceux-ci ont été retenus car ils nous permettaient d'obtenir un bon apprentissage des données (99,77\% de précision sur les données d'apprentissage) et donnait un coût minimal (0.0085 avec les données d'apprentissage).
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.75]{./img/learn_nn_chart.png}
+	\caption{Courbe d'apprentissage en fonction des epochs}
+	\label{fig:nn_app}
+\end{figure}
+
+\par % Commentaire sur la courbe d'apprentissage
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.75]{./img/loss_nn_chart.png}
+	\caption{Courbe de coût en fonction des epochs}
+	\label{fig:nn_loss}
+\end{figure}
+
+\par % Commentaire sur la courbe de coût
+
+\par % Commentaire sur le résultat de test (70% -> Peu de données d'apprentissage, classes sous représentées)
+
+% Sources utilisées :
+% Convolutional Neural Networks for Sentiment Analysis on Italian Tweets (2016)
+% Explaining Recurrent Neural Network Predictions in Sentiment Analysis (2017)
+
 \section{Stance detection}
 
 La partie "Stance detection" consiste à déterminer l'opinion du tweet par rapport au sujet, c'est-à-dire si le tweet est "pour", "contre" ou "neutre" vis à vis du sujet. Cette étape prend en entrée le "Target" (le sujet), le "Sentiment" (positif, négatif ou autre) et l'"Opinion Towards" (le tweet donne un opinion par rapport au sujet, le tweet donne un opinion qui n'a pas de rapport avec le sujet, ou le tweet ne donne pas d'opinion). Ces deux derniers sont déterminés dans les étapes précédentes. Cette dernière étape est donc sensible aux taux d'erreur précédemment obtenus.

@@ -5,7 +5,7 @@ import sklearn.preprocessing
 from keras.models import Model, load_model
 from keras.layers import Input, Concatenate, Dense,\
                          SimpleRNN, Dropout, Embedding,\
-                         Conv1D, MaxPooling1D
+                         Conv1D, MaxPooling1D, Flatten
 from keras.optimizers import Adam
 from keras.preprocessing import sequence
 from keras.preprocessing.text import hashing_trick
@@ -61,9 +61,12 @@ def create_model(sentence_length, subject_length, vocab_size, embed_output_dim):
     embed = Embedding(vocab_size, embed_output_dim)(concat)
     conv_1 = Conv1D(filters=32, kernel_size=3, padding='same', activation='relu')(embed)
     pool_1 = MaxPooling1D(pool_size=2)(conv_1)
-    rnn = SimpleRNN(100, recurrent_dropout=0.2)(pool_1)
+    conv_2 = Conv1D(filters=64, kernel_size=3, padding='same', activation='relu')(pool_1)
+    pool_2 = MaxPooling1D(pool_size=2)(conv_2)
+    #rnn = SimpleRNN(100, recurrent_dropout=0.2)(pool_1)
+    flat = Flatten()(pool_2)
 
-    dropout = Dropout(0.2)(rnn)
+    dropout = Dropout(0.2)(flat)
     output = Dense(3, activation='sigmoid')(dropout)
 
     keras_model = Model(inputs=[tweets, subjects], outputs=output)
@@ -298,3 +301,25 @@ if __name__ == '__main__':
 # Résultat : Loss : 0.0084 ; Test accuracy : 71.05%
 # Remarque : Le modèle semble ne jamais prédire la classe 3 ( The tweet is not explicitly expressing opinion )
 #            à cause du fait que cette classe est sous représentée.
+
+# 9ème modèle :
+#
+# loss : binary_crossentropy ; optimizer : adam (0.01, 0.9, 0.9, 0.01)
+#
+# Essai d'un simple réseau convolutionnel
+#
+# Input
+# Convolution (32, 3)
+# MaxPooling (2)
+# Convolution (64, 3)
+# MaxPooling (2)
+# Flatten
+# Dropout (0.2)
+# Dense (3)
+# Activation('sigmoid')
+#
+# Résultat : Loss : 0.0084 ; Test accuracy : 73.21%
+# Remarque : La classe 3 n'est toujours pas prédite, mais les résultats
+#            obtenus semblent plus souvent correct 
+#           (Meilleur résultat avec les données de test,
+#            mais également celles à prédire pour le concours)
