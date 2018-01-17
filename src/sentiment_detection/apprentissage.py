@@ -182,10 +182,10 @@ def train(dataset_train, dataset_test):
     train_set = negative_features_train + positive_features_train + neutral_features_train
     test_set = negative_features_test + positive_features_test + neutral_features_test
 
-    accuracy = multinomial_nb(train_set, test_set)
+    accuracy = logistic_regression(train_set, test_set)
     print('Good rate in percent: %s  ' % (accuracy))
 
-    pipe = make_pipeline(TfidfVectorizer(), MultinomialNB())
+    pipe = make_pipeline(TfidfVectorizer(), Logistic_regression())
     pipe.fit(train_tweet, train_sentiment)
 
     return pipe

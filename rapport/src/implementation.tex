@@ -1,23 +1,23 @@
-\par Dans cette partie nous allons ainsi vous présenter les trois briques logicielles réalisé pour ce projet et les méthodes de pré-traitement réalisés :
+\par Dans cette partie nous allons ainsi vous présenter les  différentes briques logicielles réalisées pour ce projet : \\
 
 \begin{itemize}
 	\item Pré-traitement : formatage des données
 	\item Détermination du sentiment du tweet
-	\item Détermination de l'opinion towards
-	\item 
+	\item Détermination de l'opinion towards 
+	\item Détermination du stance \\
 \end{itemize}
 
 \section{Chargement des données}
 
-Lors de l'étude des données, ne nous sommes rendu compte que le jeu de données d'apprentissage et de test ne comportent pas le même nombre de ". En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté dans le jeu de test.
+Lors de l'étude des données, nous nous sommes rendu compte que le jeu de données d'apprentissage et de test ne comportaient pas le même nombre de sujet. En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté dans le jeu de test. \\
 
 N'étant pas dans les conditions réelles de la compétition, nous avons décidé de fusionner l'ensemble des datasets afin de les redécouper de manière aléatoire en trois ensembles, l'un d'apprentissage, l'un de test pour tester les différents modèles, et l'un de "validation" \textbf{utilisé une seule fois} dans notre projet pour la prédiction.
 
 
 \section{Formatage des données}
-\par Afin d'améliorer les performances des différents blocs de cette implémentation, nous avons choisi de formater au mieux les données. Uniquement les tweets sont concernés pas ce formatage.
+\par Afin d'améliorer les performances des différents blocs de cette implémentation, nous avons choisi de formater au mieux les données. Uniquement les tweets sont concernés pas ce formatage. \\
 
-\par Plusieurs méthodes ont été appliquées:
+\par Plusieurs méthodes ont été appliquées: \\
 \begin{itemize}
   \item transformation en minuscule de tous les caractères en majuscule.
   \item suppression du hashag \#semst présent à la fin de chaque tweet, et n'apportant aucun caractère informatif au tweets.
@@ -26,10 +26,10 @@ N'étant pas dans les conditions réelles de la compétition, nous avons décid�
   \item transformation des formes contractées en leur forme étendue. Par exemple, à "ma'am" correspond le mot "madam", à "I'm" les mots "I am".
   \item transformation des nombres en le mot "number". En effet, la valeur exprimée n'a pas d'influence sur le sens du tweet.
   \item transformation des mentions (utilisation du symbole @) d'utilisateurs, en le mot "someone". Dans certains contextes, la valeur de cette mention pourrait être intéressante (dans le cas ou on arriverait à déterminer si cette mention a une valeur positive ou non par exemple), mais de part l'implémentation que nous avons choisi, ce formatage est plus pertinent, et améliore l'apprentissage du bloc "Opinion towards" detection.
-  \item transformation de tous les verbes en leur forme infinitive.
+  \item transformation de tous les verbes en leur forme infinitive. \\
 \end{itemize}
 
-\par Quelques autres formatages des tweets pourraient être pertinents dans le cadre de ce projet:
+\par Quelques autres formatages des tweets pourraient être pertinents dans le cadre de ce projet: \\
 \begin{itemize}
   \item si plusieurs mots ont un synonyme en commun, il pourrait s'avérer judicieux de remplacer lesdits mots par ce synonyme. Ainsi, nous réduisons le dictionnaire de mots utilisés, et pouvons améliorer l'apprentissage du bloc "Opinion towards" detection.
   \item il est compliqué d'extraire le sens des hashags utilisés dans les tweets, cependant il correspondent régulièrement à un groupe de mots collés. Ainsi un hashag comme \#NetNeutrality pourrait être décomposé en deux mots, "net" et "neutrality".
@@ -41,7 +41,7 @@ Certains formatage appliqués ne sont pas forcément des plus précis, et pourra
 \section{Sentiment analysis}
 
 \par Concernant la partie détection de sentiment l'objectif est de déterminer si le tweet est "positif", "neutre" ou "négatif". 
-\par Pour déterminer la méthode la plus efficace nous avons réaliser une comparaison de plusieurs méthodes :
+\par Pour déterminer la méthode la plus efficace nous avons réaliser une comparaison de plusieurs méthodes :\\
 
 \begin{itemize}
 	\item Étude du sentiment des Tweets à l'aide de la polarité positive, négative et neutre de chaque mot des Tweets via l'utilisation de Sentiwordnet.
@@ -99,8 +99,8 @@ Avec-prétraitement & 54,6\%                   \\ \hline
 
 \par \textbf{Principe : } \\
 \par Pour l'apprentissage les classifier nltk fonctionne avec des structures de caractéristiques, dans notre cas avec des dictionnaires associant le nom d'une caractéristique à une valeur. 
-\par D'après une étude bibliographique nous nous sommes tourné vers l'étude de Naive Bayes Classifier dans un premier temps puis ensuite sur des classifiers alternatif.  
-\par Nous utilisons ce type de classifier basées sur les fréquences de mots associées à chaque étiquette de positif ou négatif. \\
+\par D'après une étude bibliographique nous nous sommes tournés vers l'étude de classifier probabiliste et linéaire.
+\par Nous utilisons ce type de classifier basés sur les fréquences de mots associées à chaque étiquette de positif ou négatif. \\
 
 \par Sur le jeu d'apprentissage pour construire le modèle on va utiliser les informations suivantes : \\
 \begin{itemize}
@@ -139,8 +139,12 @@ LinearSVC          & 61,6\%                                                     
 \end{table}
 
 \par \textbf{Conclusion :} \\
-\par La méthode la plus efficace est la méthode utilisant TD*IDF avec le classifier Regression Logistique. \\
+\par La méthode la plus efficace est la méthode utilisant TF*IDF avec le classifier Regression Logistique. \\
 
+
+\subsection{Conclusion}
+
+\par Ainsi d'après les différents benchmark il est mis en évidence que les méthodes de machine learning sont beaucoup plus efficace que les méthodes de détermination de sentiments à partir de texte uniquement. En effet on obtient 54,6\% de bonne prédiction avec Sentiwornet contre 63,3\% avec le plus "mauvais" classifiers. Néanmoins dans le meilleur des cas on obtient avec le classifier de regression logistique en utilisant la méthode de TF*IDF un taux de bonne prédiction de 72.7\%.
 
  
 \section{"Opinion towards" detection}
@@ -189,6 +193,7 @@ Ensuite, il s'est avéré intéressant de tester différents paramètres de la m
 \textbf{Les valeurs C=100 et gamma=0.1 ont donc été choisi pour réaliser cette SVM, qui fournit finalement un taux d'erreur de $24,49\%$}.
 
 C'est donc cette méthode qui a été implémentée
+
 \subsection{Implémentation d'une SVM}
 
 
