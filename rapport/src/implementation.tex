@@ -3,19 +3,20 @@
 \begin{itemize}
 	\item Pré-traitement : formatage des données
 	\item Détermination du sentiment du tweet
-	\item Détermination de l'opinion towards 
+	\item Détermination de l'opinion towards
 	\item Détermination du stance \\
 \end{itemize}
 
 \section{Chargement des données}
 
-Lors de l'étude des données, nous nous sommes rendu compte que le jeu de données d'apprentissage et de test ne comportaient pas le même nombre de sujet. En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté dans le jeu de test. \\
+Lors de l'étude des données, nous nous sommes aperçu que le jeu de données d'apprentissage et de test ne comportaient pas le même nombre de sujet. En effet, des tweets concernant le sujet "Donald Trump" ont été ajouté dans le jeu de test. \\
 
 N'étant pas dans les conditions réelles de la compétition, nous avons décidé de fusionner l'ensemble des datasets afin de les redécouper de manière aléatoire en trois ensembles, l'un d'apprentissage, l'un de test pour tester les différents modèles, et l'un de "validation" \textbf{utilisé une seule fois} dans notre projet pour la prédiction.
 
 
 \section{Formatage des données}
-\par Afin d'améliorer les performances des différents blocs de cette implémentation, nous avons choisi de formater au mieux les données. Uniquement les tweets sont concernés pas ce formatage. \\
+\par Afin d'améliorer les performances des différents blocs de cette implémentation, nous avons choisi de formater au mieux les données. Uniquement les tweets sont concernés pas ce formatage.
+\par En effet, des méthodes basées sur de la fouille de données sont utilisées dans les différents blocs de cette implémentation. Le fait d'utiliser des chaines de caractère en entrée (les tweets) nécessite de les hasher en chiffre, d'ou la nécessité de ce formatage.
 
 \par Plusieurs méthodes ont été appliquées: \\
 \begin{itemize}
@@ -36,11 +37,15 @@ N'étant pas dans les conditions réelles de la compétition, nous avons décid�
   \item transformation des mots au pluriel en leur forme au singulier. En effet, ils seront interprétés comme étant des mots différents par le bloc "Opinion towards" detection, alors qu'ils n'influent pas sur sens général du tweet.
   \item suppression des répétitions de mots.
 \end{itemize}
-Certains formatage appliqués ne sont pas forcément des plus précis, et pourraient être améliorés. Par exemple, dans le cas du remplacement des contractions en mots, il est difficile de déterminer si "he's" correspond à "he is" ou "he has".
+
+\par Certains formatage appliqués ne sont pas forcément des plus précis, et pourraient être améliorés. Par exemple, dans le cas du remplacement des contractions en mots, il est difficile de déterminer si "he's" correspond à "he is" ou "he has".
+
+\par Il est difficile d'estimer le gain de performance apporté par ces formatages de manière indépendante, notamment de part la faible fréquence d'apparition de certain d'entre eux, et du nombre de méthodes testés dans les blocs (notamment dans la partie de sentiment analysis)\\
+Cependant, nous constatons un gain de performance général d'environ 1.5\% dans le bloc de détection de l'opinion. 
 
 \section{Sentiment analysis}
 
-\par Concernant la partie détection de sentiment l'objectif est de déterminer si le tweet est "positif", "neutre" ou "négatif". 
+\par Concernant la partie détection de sentiment l'objectif est de déterminer si le tweet est "positif", "neutre" ou "négatif".
 \par Pour déterminer la méthode la plus efficace nous avons réaliser une comparaison de plusieurs méthodes :\\
 
 \begin{itemize}
@@ -85,7 +90,7 @@ Avec-prétraitement & 54,6\%                   \\ \hline
 
 \par L'objectif dans cette méthode est d'utiliser un autre dictionnaire pour étudier la polarité des mots des tweets car le dictionnaire Sentiwordnet possède un lexique restreint ne permettant pas de calculer la polarité de tous les mots donc beaucoup ne sont pas étudié. \\
 
-\par L'avantage avec Wordnet c'est que l'on va extraire les mots des tweets et pour tous les mots on va à l'aide de Wordnet récupérer le mot le plus général du mot en entrée. Par exemple grâce à sa reconnaissance de synonyme wordnet va transformer les mots "sorrowful" et "sad" par le mot "unhappy". Ainsi l'avantage ici c'est que l'on va appliquer la même méthode que précédemment avec Sentiwornet pour le calcul de polarité mais grâce à l'utilisation de Wordnet en amont le dictionnaire Sentiwornet pourra calculer le score de davantage de mots car les mots non présent dans ce dictionnaire auront été remplacé par des mots plus basiques bien présent dans Sentiwornet. \\ 
+\par L'avantage avec Wordnet c'est que l'on va extraire les mots des tweets et pour tous les mots on va à l'aide de Wordnet récupérer le mot le plus général du mot en entrée. Par exemple grâce à sa reconnaissance de synonyme wordnet va transformer les mots "sorrowful" et "sad" par le mot "unhappy". Ainsi l'avantage ici c'est que l'on va appliquer la même méthode que précédemment avec Sentiwornet pour le calcul de polarité mais grâce à l'utilisation de Wordnet en amont le dictionnaire Sentiwornet pourra calculer le score de davantage de mots car les mots non présent dans ce dictionnaire auront été remplacé par des mots plus basiques bien présent dans Sentiwornet. \\
 
 \par Dans la méthode précédente on a pu constater que les pré-traitement étaient utiles donc nous les avons conserver dans cette méthode également. \\
 
@@ -98,7 +103,7 @@ Avec-prétraitement & 54,6\%                   \\ \hline
 \par Pour l'utilisation de classifier nous nous sommes tourné vers l'utilisation de la librairie scikit-learn et nltk. \\
 
 \par \textbf{Principe : } \\
-\par Pour l'apprentissage les classifier nltk fonctionne avec des structures de caractéristiques, dans notre cas avec des dictionnaires associant le nom d'une caractéristique à une valeur. 
+\par Pour l'apprentissage les classifier nltk fonctionne avec des structures de caractéristiques, dans notre cas avec des dictionnaires associant le nom d'une caractéristique à une valeur.
 \par D'après une étude bibliographique nous nous sommes tournés vers l'étude de classifier probabiliste et linéaire.
 \par Nous utilisons ce type de classifier basés sur les fréquences de mots associées à chaque étiquette de positif ou négatif. \\
 
@@ -146,7 +151,7 @@ LinearSVC          & 61,6\%                                                     
 
 \par Ainsi d'après les différents benchmark il est mis en évidence que les méthodes de machine learning sont beaucoup plus efficace que les méthodes de détermination de sentiments à partir de texte uniquement. En effet on obtient 54,6\% de bonne prédiction avec Sentiwornet contre 63,3\% avec le plus "mauvais" classifiers. Néanmoins dans le meilleur des cas on obtient avec le classifier de regression logistique en utilisant la méthode de TF*IDF un taux de bonne prédiction de 72.7\%.
 
- 
+
 \section{"Opinion towards" detection}
 
 \par Du fait des divers travaux qui concernent la classification de texte avec des réseaux de neurones\cite{cnn}\cite{rnn}, nous avons tenté d'en implémenter un afin de détecter si l'opinion est présente directement (Classe 1), indirectement (Classe 2) ou si il n'y a pas d'opinion exprimée (Classe 3) dans un tweet.
@@ -202,7 +207,7 @@ LinearSVC          & 61,6\%                                                     
 	\label{fig:nn_loss}
 \end{figure}
 
-\par Nous pouvons également constater que la fonction de coût de ce réseau de neurones est bien minimisée (Voir figure \ref{fig:nn_loss}), ce qui démontre que ce réseau est sujet à faire peu d'erreur sur des données semblables à celles données en apprentissage. 
+\par Nous pouvons également constater que la fonction de coût de ce réseau de neurones est bien minimisée (Voir figure \ref{fig:nn_loss}), ce qui démontre que ce réseau est sujet à faire peu d'erreur sur des données semblables à celles données en apprentissage.
 
 \par Nous avons pu voir que le réseau était capable de correctement prédire les données d'apprentissage, mais il en est autrement pour les données de test. En effet, nous obtenons avec ce modèle une précision de 73.21\% et un coût de 1.99. Le modèle se révèle donc moins performant que ce que nous espérions. Ceci peut s'expliquer simplement par le fait que notre jeu de données d'apprentissage contient peu de données (environ 3000) et que l'une des classes est sous-représentée (La répartition de classe est telle que nous avons : 58.88\% / 35.14\% / 5.97\%).
 
@@ -226,7 +231,7 @@ Une première approche a été de tester différentes méthodes de classificatio
 Pour cela, un petit traitement sur les données s'impose, effectivement pour utiliser de telles méthodes il est d'abord nécessaire de labelliser les données avec des classes numérotées pour s'abstraire des chaînes de caractères. \\
 Dans le jeu de données de train fourni, il y 5 "target" différents, en ce qui concerne le "sentiment" il y a 3 classes possibles et il en est de même pour l'"opinion towards".
 
-En essayant de réaliser une SVM, nous nous sommes rendu compte que dans le jeu de données de test il y avait maintenant 6 "target". En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté. Or, le modèle ne peut pas fonctionner pour un sujet qui n'a pas été appris. 
+En essayant de réaliser une SVM, nous nous sommes rendu compte que dans le jeu de données de test il y avait maintenant 6 "target". En effet, les tweets concernant le sujet "Donald Trump" ont été ajouté. Or, le modèle ne peut pas fonctionner pour un sujet qui n'a pas été appris.
 La solution a dont été de fusionner les ensembles d'apprentissage et de test et de les redécouper de manière aléatoire afin d'obtenir des tweets de l'ensemble des "target" dans l'ensemble d'apprentissage.
 
 \subsection{POC - Test de méthodes de classification}
@@ -258,7 +263,3 @@ Ensuite, il s'est avéré intéressant de tester différents paramètres de la m
 C'est donc cette méthode qui a été implémentée
 
 \subsection{Implémentation d'une SVM}
-
-
-
-
