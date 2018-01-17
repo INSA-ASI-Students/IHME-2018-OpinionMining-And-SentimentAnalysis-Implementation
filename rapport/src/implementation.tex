@@ -20,28 +20,28 @@ N'étant pas dans les conditions réelles de la compétition, nous avons décid�
 
 \par Plusieurs méthodes ont été appliquées: \\
 \begin{itemize}
-  \item transformation en minuscule de tous les caractères en majuscule.
+  \item transformation en minuscule de tous les caractères initialement en majuscule.
   \item suppression du hashag \#semst présent à la fin de chaque tweet, et n'apportant aucun caractère informatif au tweets.
-  \item remplacement des symboles pouvant être exprimés par des mots en ledit mot. Par exemple, au symbole \% correspond le mot "percent", au symbole \& le mot "and", ...
+  \item remplacement en mots des symboles pouvant être exprimés par des mots. Par exemple, au symbole \% correspond le mot "percent", au symbole \& le mot "and", ...
   \item suppression de tous les symboles ne pouvant pas être exprimés pas des mots, en particulier les symboles de ponctuation.
   \item transformation des formes contractées en leur forme étendue. Par exemple, à "ma'am" correspond le mot "madam", à "I'm" les mots "I am".
   \item transformation des nombres en le mot "number". En effet, la valeur exprimée n'a pas d'influence sur le sens du tweet.
   \item transformation des mentions (utilisation du symbole @) d'utilisateurs, en le mot "someone". Dans certains contextes, la valeur de cette mention pourrait être intéressante (dans le cas ou on arriverait à déterminer si cette mention a une valeur positive ou non par exemple), mais de part l'implémentation que nous avons choisi, ce formatage est plus pertinent, et améliore l'apprentissage du bloc "Opinion towards" detection.
-  \item transformation de tous les verbes en leur forme infinitive. \\
+  \item transformation de tous les verbes en leur forme infinitive. Ainsi nous réduisons la taille du dictionnaire utilisé; le temps utilisé n'a pas de réelle influence sur la valeur positive ou négative d'un mot.\\
 \end{itemize}
 
 \par Quelques autres formatages des tweets pourraient être pertinents dans le cadre de ce projet: \\
 \begin{itemize}
-  \item si plusieurs mots ont un synonyme en commun, il pourrait s'avérer judicieux de remplacer lesdits mots par ce synonyme. Ainsi, nous réduisons le dictionnaire de mots utilisés, et pouvons améliorer l'apprentissage du bloc "Opinion towards" detection.
+  \item si plusieurs mots ont un synonyme en commun, il pourrait s'avérer judicieux de remplacer lesdits mots par ce synonyme. Ainsi, nous réduisons le dictionnaire de mots utilisés dans le but d'améliorer les parties basées sur de la fouille de données.
   \item il est compliqué d'extraire le sens des hashags utilisés dans les tweets, cependant il correspondent régulièrement à un groupe de mots collés. Ainsi un hashag comme \#NetNeutrality pourrait être décomposé en deux mots, "net" et "neutrality".
-  \item transformation des mots au pluriel en leur forme au singulier. En effet, ils seront interprétés comme étant des mots différents par le bloc "Opinion towards" detection, alors qu'ils n'influent pas sur sens général du tweet.
-  \item suppression des répétitions de mots.
+  \item transformation des mots au pluriel en leur forme au singulier. En effet, de part la fonction de hashage utilisée, ils seront interprétés comme étant des mots différents dans les blocs utilisant des méthodes de fouille de données, alors qu'ils n'influent ni sur le sens général du tweet, si sur son sentiment général.
+  \item suppression des répétitions successives d'un mot. Par exemple "very very".
 \end{itemize}
 
 \par Certains formatage appliqués ne sont pas forcément des plus précis, et pourraient être améliorés. Par exemple, dans le cas du remplacement des contractions en mots, il est difficile de déterminer si "he's" correspond à "he is" ou "he has".
 
 \par Il est difficile d'estimer le gain de performance apporté par ces formatages de manière indépendante, notamment de part la faible fréquence d'apparition de certain d'entre eux, et du nombre de méthodes testés dans les blocs (notamment dans la partie de sentiment analysis)\\
-Cependant, nous constatons un gain de performance général d'environ 1.5\% dans le bloc de détection de l'opinion. 
+Cependant, nous constatons un gain de performance général d'environ 1.5\% dans le bloc de détection de l'opinion.
 
 \section{Sentiment analysis}
 
@@ -262,4 +262,7 @@ Ensuite, il s'est avéré intéressant de tester différents paramètres de la m
 
 C'est donc cette méthode qui a été implémentée
 
-\subsection{Implémentation d'une SVM}
+
+\section{Mise en commun}
+\par La dernière étape de ce projet a consisté à mettre en en commun tous ces blocs, selon le schéma détaillé en \ref{flux_diagram}.\\
+Ainsi, un script a été conçu afin de pouvoir lancer au choix, un apprentissage suivi d'un test, ou une prédiction. De même, plusieurs options sont disponibles à l'exécution de ce script, permettant par exemple de choisir la méthode à utiliser sur chacun des blocs conçus au cours de cette implémentation.
