@@ -149,7 +149,9 @@ LinearSVC          & 61,6\%                                                     
  
 \section{"Opinion towards" detection}
 
-\par 
+\par Du fait des divers travaux qui concernent la classification de texte avec des réseaux de neurones\cite{cnn}\cite{rnn}, nous avons tenté d'en implémenter un afin de détecter si l'opinion est présente directement (Classe 1), indirectement (Classe 2) ou si il n'y a pas d'opinion exprimée (Classe 3) dans un tweet.
+
+\par Nous présentons donc dans cette partie les différents essais que nous avons fait et la solution que nous avons retenue.
 
 \subsection{Structure du réseau}
 
@@ -191,7 +193,7 @@ LinearSVC          & 61,6\%                                                     
 	\label{fig:nn_app}
 \end{figure}
 
-\par % Commentaire sur la courbe d'apprentissage
+\par Au niveau de l'apprentissage, ce réseau se montre performant (Voir figure \ref{fig:nn_app}). En effet, celui-ci est capable d'apprendre les données d'apprentissage et de les prédire correctement dans leur ensemble par la suite.
 
 \begin{figure}
 	\centering
@@ -200,9 +202,11 @@ LinearSVC          & 61,6\%                                                     
 	\label{fig:nn_loss}
 \end{figure}
 
-\par % Commentaire sur la courbe de coût
+\par Nous pouvons également constater que la fonction de coût de ce réseau de neurones est bien minimisée (Voir figure \ref{fig:nn_loss}), ce qui démontre que ce réseau est sujet à faire peu d'erreur sur des données semblables à celles données en apprentissage. 
 
-\par % Commentaire sur le résultat de test (70% -> Peu de données d'apprentissage, classes sous représentées)
+\par Nous avons pu voir que le réseau était capable de correctement prédire les données d'apprentissage, mais il en est autrement pour les données de test. En effet, nous obtenons avec ce modèle une précision de 73.21\% et un coût de 1.99. Le modèle se révèle donc moins performant que ce que nous espérions. Ceci peut s'expliquer simplement par le fait que notre jeu de données d'apprentissage contient peu de données (environ 3000) et que l'une des classes est sous-représentée (La répartition de classe est telle que nous avons : 58.88\% / 35.14\% / 5.97\%).
+
+\par Nous pensons donc que la méthode est adaptée lorsque nous avons un grand nombre de données afin de s'adapter au plus de cas possible, ce qui n'étais pas le cas ici. Néanmoins, du fait que la détection de subjectivité dans un texte est un sujet difficile de manière générale et à la vue des résultats obtenus avec les autres méthodes, nous avons décidé de conserver ce classifieur.
 
 % Sources utilisées :
 % Convolutional Neural Networks for Sentiment Analysis on Italian Tweets (2016)
